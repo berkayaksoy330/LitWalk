@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LitWalk — Barselona Aydınlık Yürüyüş & Gençlik Rehberi</title>
-    <!-- Leaflet Harita CSS -->
+    <title>LitWalk — Barcelona Well-Lit Walk & Student Nightlife Radar</title>
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
@@ -76,59 +76,59 @@
         <div class="logo-box">
             <span class="logo-icon">🚶‍♂️</span>
             <div class="logo-text">
-                <h1>LitWalk <span class="city-badge">Barselona 🇪🇸</span></h1>
-                <p>Ciutat Vella • El Raval • Gòtic</p>
+                <h1>LitWalk <span class="city-badge">Barcelona 🇪🇸</span></h1>
+                <p>Ciutat Vella • El Raval • Gothic Quarter</p>
             </div>
         </div>
         <div class="header-actions">
-            <button id="nightToggle" class="night-btn">🌙 Gece</button>
-            <button id="sosBtn" class="sos-btn">🆘 Acil 112</button>
+            <button id="nightToggle" class="night-btn">🌙 Night</button>
+            <button id="sosBtn" class="sos-btn">🆘 SOS 112</button>
         </div>
     </header>
 
     <div class="filter-bar">
-        <button id="filterWater" class="filter-chip active">💧 7 İçme Suyu Çeşmesi</button>
-        <button id="filterBars" class="filter-chip active bars">🍻 5 Öğrenci Barı</button>
-        <button id="filterMustGo" class="filter-chip active">🏛️ Must-Go Klasikler</button>
-        <button id="filterScam" class="filter-chip active scam">⚠️ 3 Scam Uyarısı</button>
+        <button id="filterWater" class="filter-chip active">💧 7 Water Fountains</button>
+        <button id="filterBars" class="filter-chip active bars">🍻 5 Student Bars</button>
+        <button id="filterMustGo" class="filter-chip active">🏛️ Must-See Classics</button>
+        <button id="filterScam" class="filter-chip active scam">⚠️ 3 Scam Alerts</button>
     </div>
 
     <div id="map"></div>
 
     <div class="bottom-sheet">
-        <div class="sheet-title">📍 Güzergah Seçimi (Ciutat Vella)</div>
+        <div class="sheet-title">📍 Walking Route Options (Ciutat Vella)</div>
 
         <div class="route-presets">
             <button class="preset-btn active" data-preset="cat_marsella">Plaça Catalunya ➔ Bar Marsella</button>
             <button class="preset-btn" data-preset="macba_nevermind">MACBA ➔ Nevermind Bar</button>
-            <button class="preset-btn" data-preset="univ_reial">Univ. Meydanı ➔ Plaça Reial</button>
+            <button class="preset-btn" data-preset="univ_reial">Univ. Square ➔ Plaça Reial</button>
         </div>
 
         <div class="routes-grid">
             <div id="safeCard" class="route-card active-safe">
                 <div class="card-top">
-                    <span class="card-tag tag-safe">Önerilen Güzergah</span>
+                    <span class="card-tag tag-safe">Recommended Route</span>
                     <span class="route-dist" id="safeDist">1.2 km</span>
                 </div>
-                <div class="route-time" id="safeTime">15 dk</div>
+                <div class="route-time" id="safeTime">15 min</div>
                 <div class="index-badge">
-                    <span style="color: #94a3b8;">Aydınlatma & Canlılık:</span>
+                    <span style="color: #94a3b8;">Lighting & Activity:</span>
                     <span class="score-num score-high" id="safeScore">9.2 / 10</span>
                 </div>
-                <p class="route-desc" id="safeDesc">La Rambla ve Carrer Nou üzerinden açık mağazalar ve kesintisiz aydınlatma.</p>
+                <p class="route-desc" id="safeDesc">Via La Rambla and Carrer Nou: Fully illuminated, open late-night shops, high foot traffic.</p>
             </div>
 
             <div id="fastCard" class="route-card">
                 <div class="card-top">
-                    <span class="card-tag tag-fast">Doğrudan / Kestirme</span>
+                    <span class="card-tag tag-fast">Direct Shortcut</span>
                     <span class="route-dist" id="fastDist">1.0 km</span>
                 </div>
-                <div class="route-time" id="fastTime">13 dk</div>
+                <div class="route-time" id="fastTime">13 min</div>
                 <div class="index-badge">
-                    <span style="color: #94a3b8;">Aydınlatma & Canlılık:</span>
+                    <span style="color: #94a3b8;">Lighting & Activity:</span>
                     <span class="score-num score-med" id="fastScore">4.4 / 10</span>
                 </div>
-                <p class="route-desc" id="fastDesc">Carrer d'En Robador kestirmesi: 2 dk daha kısa; fakat loş ara sokaklar içerir.</p>
+                <p class="route-desc" id="fastDesc">Via Carrer d'En Robador: 2 min faster, but passes through poorly lit, deserted alleys.</p>
             </div>
         </div>
 
@@ -140,42 +140,42 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             margin-top: 4px;
         ">
-            <span>🗺️ Bu Aydınlık Rotayı Google Maps'te Başlat</span>
+            <span>🗺️ Start This Well-Lit Route in Google Maps</span>
         </a>
 
         <div class="legal-link-footer" id="openDisclaimer">
-            ⚖️ Yasal Bilgilendirme ve Sorumluluk Reddi (Disclaimer)
+            ⚖️ Legal Notice & Safety Disclaimer
         </div>
     </div>
 
-    <!-- Yasal Feragatname Modalı -->
+    <!-- Legal Disclaimer Modal -->
     <div id="disclaimerModal" class="modal-overlay" style="display: none;">
         <div class="modal-card">
-            <h2 class="modal-title">⚖️ Yasal Bilgilendirme & Sorumluluk Reddi</h2>
+            <h2 class="modal-title">⚖️ Safety Notice & Legal Disclaimer</h2>
             <div class="modal-body">
-                <p><strong>LitWalk Barselona'ya Hoş Geldiniz.</strong></p><br>
-                <p>Bu uygulama, Barselona Belediyesi açık verileri ve OpenStreetMap altyapısını kullanarak <strong>aydınlatma düzeyi ve yaya hareketliliği yüksek</strong> alternatif güzergahlar sunan bir rehberdir.</p><br>
-                <p>⚠️ <strong>Yasal Sorumluluk Reddi:</strong> Sunulan rota ve endeksler <strong>kesin bir güvenlik garantisi teşkil etmez</strong>. Kullanıcı kendi emniyetinden bizzat sorumludur. Acil durumlarda derhal <strong>112</strong>'yi arayınız.</p><br>
-                <p>🔒 <strong>Gizlilik:</strong> GPS veriniz hiçbir sunucuda depolanmaz.</p>
+                <p><strong>Welcome to LitWalk Barcelona.</strong></p><br>
+                <p>This app uses Barcelona Open Data and OpenStreetMap to highlight alternative pedestrian routes with <strong>higher street lighting and active foot traffic</strong>.</p><br>
+                <p>⚠️ <strong>Legal Disclaimer:</strong> Calculated routes and scores <strong>do not constitute a guarantee of safety</strong>. Always stay alert, trust your own instincts, and remain aware of your surroundings. In an emergency, dial <strong>112</strong> immediately.</p><br>
+                <p>🔒 <strong>Privacy:</strong> Your GPS location is never saved or stored on any server.</p>
             </div>
-            <button id="acceptDisclaimerBtn" class="accept-btn">Anladım, Kabul Ediyorum</button>
+            <button id="acceptDisclaimerBtn" class="accept-btn">I Understand & Agree</button>
         </div>
     </div>
 
-    <!-- Acil Yardım Modalı -->
+    <!-- Emergency Modal -->
     <div id="sosModal" class="modal-overlay" style="display: none;">
         <div class="modal-card" style="background: #1c1917; border: 1px solid #7f1d1d;">
-            <h2 class="modal-title" style="color: #f87171;">🆘 Barselona Acil Yardım</h2>
+            <h2 class="modal-title" style="color: #f87171;">🆘 Barcelona Emergency Guide</h2>
             <div class="modal-body" style="color: #e7e5e4;">
-                <p><strong>Genel Acil No:</strong> <span style="font-size: 22px; font-weight: 800; color: #f87171;">112</span></p>
-                <p><strong>Yetkili Polis:</strong> Mossos d'Esquadra / Guàrdia Urbana</p>
-                <p><strong>Karakol:</strong> Comissaria Ciutat Vella (Carrer Nou de la Rambla, 76-80)</p><br>
-                <p><strong>İspanyolca Yardım Cümlesi:</strong></p>
+                <p><strong>Emergency Dial:</strong> <span style="font-size: 22px; font-weight: 800; color: #f87171;">112</span></p>
+                <p><strong>Local Police:</strong> Mossos d'Esquadra / Guàrdia Urbana</p>
+                <p><strong>Police Station:</strong> Ciutat Vella Station (Carrer Nou de la Rambla, 76-80)</p><br>
+                <p><strong>Urgent Spanish Phrase:</strong></p>
                 <blockquote style="background: #292524; padding: 10px; border-radius: 6px; font-style: italic; color: #fca5a5;">
-                    "Necesito ayuda urgente. Por favor, llame a la policía."
+                    "Necesito ayuda urgente. Por favor, llame a la policía." (I need urgent help. Please call the police.)
                 </blockquote>
             </div>
-            <button id="closeSosBtn" class="accept-btn" style="background: #7f1d1d;">Kapat</button>
+            <button id="closeSosBtn" class="accept-btn" style="background: #7f1d1d;">Close</button>
         </div>
     </div>
 
@@ -186,38 +186,38 @@
             center: [41.3835, 2.1710],
             zoom: 15,
             water: [
-                { name: "Font de Canaletes", lat: 41.3853, lon: 2.1701, desc: "Tarihi İçilebilir Çeşme (La Rambla başı)" },
-                { name: "Plaça de Catalunya Çeşmesi", lat: 41.3870, lon: 2.1700, desc: "Meydan Park Çeşmesi" },
-                { name: "Plaça Reial Çeşmesi", lat: 41.3797, lon: 2.1752, desc: "Tres Gràcies Çeşmesi" },
-                { name: "MACBA Meydanı Su Noktası", lat: 41.3833, lon: 2.1670, desc: "Kaykay Meydanı Çeşmesi" },
-                { name: "Universitat Meydanı", lat: 41.3858, lon: 2.1645, desc: "Kampüs Önü İçme Suyu" },
-                { name: "Rambla del Raval Çeşmesi", lat: 41.3787, lon: 2.1698, desc: "Kedi Heykeli Yanı" },
-                { name: "Parc de la Ciutadella Dolum", lat: 41.3882, lon: 2.1874, desc: "Şişe Dolum İstasyonu" }
+                { name: "Font de Canaletes", lat: 41.3853, lon: 2.1701, desc: "Historic Drinking Fountain (Top of La Rambla)" },
+                { name: "Plaça de Catalunya Fountain", lat: 41.3870, lon: 2.1700, desc: "Central Square Fountain" },
+                { name: "Plaça Reial Fountain", lat: 41.3797, lon: 2.1752, desc: "Tres Gràcies Historic Fountain" },
+                { name: "MACBA Skate Plaza Water Point", lat: 41.3833, lon: 2.1670, desc: "Public Drinking Fountain" },
+                { name: "Universitat Square Fountain", lat: 41.3858, lon: 2.1645, desc: "Campus Front Drinking Point" },
+                { name: "Rambla del Raval Fountain", lat: 41.3787, lon: 2.1698, desc: "Beside Botero Cat Statue" },
+                { name: "Parc de la Ciutadella Refill", lat: 41.3882, lon: 2.1874, desc: "Bottle Refill Station" }
             ],
             bars: [
-                { name: "L'Ovella Negra", lat: 41.3846, lon: 2.1691, beer: "2.80 €", vibe: "Efsanevi salaş öğrenci barı, dev sürahiler, masa oyunları." },
-                { name: "Nevermind Skate Bar", lat: 41.3841, lon: 2.1678, beer: "3.00 €", vibe: "İçeride mini kaykay rampası, bedava patlamış mısır." },
-                { name: "Bar Manchester", lat: 41.3812, lon: 2.1795, beer: "3.20 €", vibe: "Indie / Britpop barlarının Gotik'teki merkezi." },
-                { name: "Bar Marsella (1820)", lat: 41.3788, lon: 2.1718, beer: "2.50 €", vibe: "Hemingway'in gittiği tarihi salaş bar, ucuz bira." },
-                { name: "Espit Chupitos Raval", lat: 41.3818, lon: 2.1659, beer: "2.50 € (Shot 2€)", vibe: "600 çeşit alevli shot, üniversite geceleri." }
+                { name: "L'Ovella Negra", lat: 41.3846, lon: 2.1691, beer: "2.80 €", vibe: "Legendary rustic student tavern, huge beer pitchers, board games." },
+                { name: "Nevermind Skate Bar", lat: 41.3841, lon: 2.1678, beer: "3.00 €", vibe: "Mini skate bowl indoors, free hot popcorn with every drink." },
+                { name: "Bar Manchester", lat: 41.3812, lon: 2.1795, beer: "3.20 €", vibe: "Indie / Britpop music, international backpacker and Erasmus crowd." },
+                { name: "Bar Marsella (1820)", lat: 41.3788, lon: 2.1718, beer: "2.50 €", vibe: "Hemingway's historic bohemian haunt, dusty mirrors, cheap beer." },
+                { name: "Espit Chupitos Raval", lat: 41.3818, lon: 2.1659, beer: "2.50 € (Shots 2€)", vibe: "Over 600 wild flaming shot varieties, loud student party." }
             ],
             mustgo: [
-                { name: "Plaça de Catalunya", lat: 41.3870, lon: 2.1700, desc: "Şehrin merkezi meydanı" },
-                { name: "Barselona Katedrali (Gòtic)", lat: 41.3840, lon: 2.1762, desc: "Tarihi katedral ve meydan" },
-                { name: "Plaça Reial", lat: 41.3797, lon: 2.1752, desc: "Gaudí lambalı gotik meydan" },
-                { name: "MACBA Meydanı", lat: 41.3833, lon: 2.1668, desc: "Açık hava gençlik buluşma alanı" }
+                { name: "Plaça de Catalunya", lat: 41.3870, lon: 2.1700, desc: "The bustling central square" },
+                { name: "Barcelona Cathedral (Gothic)", lat: 41.3840, lon: 2.1762, desc: "Historic monument and plaza" },
+                { name: "Plaça Reial", lat: 41.3797, lon: 2.1752, desc: "Gaudí-lamp post arcade square" },
+                { name: "MACBA Plaza", lat: 41.3833, lon: 2.1668, desc: "Europe's most famous open-air skate and student hangout" }
             ],
             scam: [
-                { title: "Las Ramblas Çiçekçi ve Sahte İmzalar", lat: 41.3815, lon: 2.1735, desc: "Zorla pano uzatıp çantanıza uzanan yankesicilere dikkat." },
-                { title: "Carrer d'En Robador (Karanlık Ara Geçit)", lat: 41.3795, lon: 2.1705, desc: "Gece saatlerinde ıssızdır. Önerilen rotamız burayı baypas eder." },
-                { title: "Metro Liceu Çıkış Merdivenleri", lat: 41.3804, lon: 2.1738, desc: "Merdivende yapay kalabalık oluşturan yankesici gruplara dikkat." }
+                { title: "Las Ramblas Fake Petition & Flower Sellers", lat: 41.3815, lon: 2.1735, desc: "Beware of people holding clipboards for fake deaf charities while pickpocketing." },
+                { title: "Carrer d'En Robador (Dark Alleyway)", lat: 41.3795, lon: 2.1705, desc: "Deserted and dim at night. Our recommended route completely bypasses this street." },
+                { title: "Metro Liceu Exit Stairs", lat: 41.3804, lon: 2.1738, desc: "Watch out for staged crowding or abrupt stops on stairways." }
             ],
             presets: {
                 cat_marsella: {
                     name: "Plaça Catalunya ➔ Bar Marsella",
                     safe: {
                         time: 15, dist: "1.2 km", score: 9.2,
-                        desc: "La Rambla ve Carrer Nou üzerinden açık mağazalar ve yüksek aydınlatma.",
+                        desc: "Via La Rambla & Carrer Nou: Open shops and high foot traffic.",
                         coords: [
                             [41.3870, 2.1700], [41.3853, 2.1702], [41.3825, 2.1730],
                             [41.3800, 2.1745], [41.3788, 2.1740], [41.3788, 2.1718]
@@ -225,7 +225,7 @@
                     },
                     fast: {
                         time: 13, dist: "1.0 km", score: 4.4,
-                        desc: "Carrer d'En Robador kestirmesi: 2 dk daha kısa fakat loş ara sokaklar içerir.",
+                        desc: "Carrer d'En Robador cut: 2 min faster but passes through dim back-alleys.",
                         coords: [
                             [41.3870, 2.1700], [41.3853, 2.1702], [41.3835, 2.1685],
                             [41.3810, 2.1700], [41.3788, 2.1718]
@@ -236,20 +236,20 @@
                     name: "MACBA ➔ Nevermind Skate Bar",
                     safe: {
                         time: 6, dist: "450 m", score: 9.1,
-                        desc: "Carrer de Ferlandina ve Joaquim Costa'nın açık kafeleri üzerinden.",
+                        desc: "Via Carrer de Ferlandina & Joaquim Costa's active terraces.",
                         coords: [[41.3833, 2.1668], [41.3837, 2.1672], [41.3841, 2.1678]]
                     },
                     fast: {
                         time: 5, dist: "350 m", score: 6.0,
-                        desc: "Doğrudan dar arka geçit.",
+                        desc: "Direct through narrow back alley.",
                         coords: [[41.3833, 2.1668], [41.3838, 2.1675], [41.3841, 2.1678]]
                     }
                 },
                 univ_reial: {
-                    name: "Univ. Meydanı ➔ Plaça Reial",
+                    name: "Univ. Square ➔ Plaça Reial",
                     safe: {
                         time: 16, dist: "1.3 km", score: 9.3,
-                        desc: "Carrer de Pelai ve La Rambla yaya koridoru üzerinden tam aydınlık.",
+                        desc: "Via Carrer de Pelai & La Rambla wide pedestrian avenue.",
                         coords: [
                             [41.3858, 2.1645], [41.3858, 2.1670], [41.3853, 2.1702],
                             [41.3825, 2.1730], [41.3800, 2.1745], [41.3797, 2.1752]
@@ -257,7 +257,7 @@
                     },
                     fast: {
                         time: 12, dist: "950 m", score: 5.2,
-                        desc: "Raval dar ara sokaklarından kestirme geçiş.",
+                        desc: "Shortcut cutting across narrow Raval side streets.",
                         coords: [[41.3858, 2.1645], [41.3835, 2.1685], [41.3808, 2.1712], [41.3797, 2.1752]]
                     }
                 }
@@ -302,7 +302,7 @@
                         <div style="font-size: 13px; color: #0f172a;">
                             <strong style="color: #0284c7;">💧 ${w.name}</strong><br>
                             <span>${w.desc}</span><br>
-                            <span style="color: #16a34a; font-weight: 600;">✓ Ücretsiz & İçilebilir Onaylı</span>
+                            <span style="color: #16a34a; font-weight: 600;">✓ Free & Potable Drinking Water</span>
                         </div>
                     `);
                     markersLayer.addLayer(m);
@@ -315,7 +315,7 @@
                     const m = L.marker([b.lat, b.lon], { icon }).bindPopup(`
                         <div style="font-size: 13px; color: #0f172a;">
                             <strong style="color: #b45309;">🍻 ${b.name}</strong><br>
-                            <span style="font-weight: 700; color: #16a34a;">🍺 Bira: ${b.beer}</span> • <span>Ücretsiz Giriş</span><br>
+                            <span style="font-weight: 700; color: #16a34a;">🍺 Beer: ${b.beer}</span> • <span>Free Entry</span><br>
                             <p style="margin-top: 4px; font-size: 11px; color: #475569;">${b.vibe}</p>
                         </div>
                     `);
@@ -341,7 +341,7 @@
                     const icon = createCustomIcon("⚠️", "#dc2626");
                     const m = L.marker([s.lat, s.lon], { icon }).bindPopup(`
                         <div style="font-size: 12px; color: #0f172a; max-width: 200px;">
-                            <strong style="color: #dc2626;">⚠️ ${s.title}</strong><br>
+                            <strong style="color: #dc2626;">⚠️ Alert: ${s.title}</strong><br>
                             <p style="margin-top: 4px; color: #334155;">${s.desc}</p>
                         </div>
                     `);
@@ -365,20 +365,20 @@
                 color: '#f59e0b', weight: 4, opacity: 0.85, dashArray: '8, 8'
             }).addTo(map);
 
-            document.getElementById('safeTime').innerText = `${p.safe.time} dk`;
+            document.getElementById('safeTime').innerText = `${p.safe.time} min`;
             document.getElementById('safeDist').innerText = p.safe.dist;
             document.getElementById('safeScore').innerText = `${p.safe.score} / 10`;
             document.getElementById('safeDesc').innerText = p.safe.desc;
 
-            document.getElementById('fastTime').innerText = `${p.fast.time} dk`;
+            document.getElementById('fastTime').innerText = `${p.fast.time} min`;
             document.getElementById('fastDist').innerText = p.fast.dist;
             document.getElementById('fastScore').innerText = `${p.fast.score} / 10`;
             document.getElementById('fastDesc').innerText = p.fast.desc;
 
-            // Google Maps Linkini Otomatik Ayarla
-            const origin = `${p.safe.coords[0][0]},${p.safe.coords[0][1]}`;
-            const dest = `${p.safe.coords[p.safe.coords.length-1][0]},${p.safe.coords[p.safe.coords.length-1][1]}`;
-            const waypoints = p.safe.coords.slice(1, -1).map(c => `${c[0]},${c[1]}`).join('|');
+            // Set Google Maps Link
+            const origin = `${p.safe.coords[0][0]},${p.safe.coords[0]}`;
+            const dest = `${p.safe.coords[p.safe.coords.length-1][0]},${p.safe.coords[p.safe.coords.length-1]}`;
+            const waypoints = p.safe.coords.slice(1, -1).map(c => `${c[0]},${c}`).join('|');
             const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&waypoints=${encodeURIComponent(waypoints)}&travelmode=walking`;
             document.getElementById('gmapsNavBtn').href = gmapsUrl;
 
@@ -420,7 +420,7 @@
         document.getElementById('nightToggle').addEventListener('click', function() {
             isNight = !isNight;
             this.classList.toggle('active', isNight);
-            this.innerText = isNight ? "☀️ Gündüz" : "🌙 Gece";
+            this.innerText = isNight ? "☀️ Day" : "🌙 Night";
             const curFastScore = parseFloat(document.getElementById('fastScore').innerText);
             document.getElementById('fastScore').innerText = isNight 
                 ? (curFastScore - 0.8).toFixed(1) + " / 10" 
