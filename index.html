@@ -131,7 +131,6 @@
         .score-high { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
         .score-med { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.3); }
 
-        /* The New Share Button */
         .share-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(56, 189, 248, 0.4);
@@ -148,7 +147,6 @@
 
         .legal-link-footer { font-size: 11px; color: #64748b; text-align: center; margin-top: 8px; cursor: pointer; }
         
-        /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 16px; }
         .modal-card { background: #151d30; border: 1px solid var(--glass-border); border-radius: 20px; max-width: 440px; width: 100%; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         .accept-btn { width: 100%; background: #0284c7; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; }
@@ -165,8 +163,9 @@
         <div class="top-left-controls">
             <div class="glass-pill" style="pointer-events: none;"><span>🚶‍♂️</span> LitWalk</div>
             <select id="mapStyleSelect" class="glass-pill">
-                <option value="dark">🌙 Dark Map</option>
-                <option value="light">☀️ Light Map</option>
+                <option value="dark">🌙 Dark Mode</option>
+                <option value="light">☀️ Light Mode</option>
+                <option value="satellite">🛰️ Satellite</option>
             </select>
         </div>
         <div class="top-right-controls">
@@ -228,9 +227,7 @@
                 </div>
             </div>
 
-            <!-- New Share Button Implemented -->
             <button id="shareRouteBtn" class="share-btn">📲 Share My Live ETA & Route</button>
-
             <a id="gmapsNavBtn" href="#" target="_blank" class="gmaps-btn">🗺️ Start Walking in Google Maps</a>
         </div>
     </div>
@@ -255,7 +252,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // CORE ENGINE & VARIABLES
         let CITIES_DATA = {};
         let currentCityKey = "barcelona";
         let map;
@@ -267,12 +263,13 @@
         let debounceTimer = null;
         let currentTileLayer = null;
 
+        // FREE API-KEY-FREE ESRI & OPENSTREETMAP TILE PROVIDERS
         const TILE_PROVIDERS = {
-            dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-            light: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            dark: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+            light: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+            satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         };
 
-        // FETCH DATA FROM JSON
         async function loadCityData() {
             try {
                 const response = await fetch('./data/cities.json');
@@ -289,7 +286,11 @@
 
         function setMapStyle(styleKey) {
             if (currentTileLayer) map.removeLayer(currentTileLayer);
-            currentTileLayer = L.tileLayer(TILE_PROVIDERS[styleKey] || TILE_PROVIDERS.dark, { maxZoom: 19 }).addTo(map);
+            const maxZoomLevel = styleKey === 'satellite' ? 18 : 16;
+            currentTileLayer = L.tileLayer(TILE_PROVIDERS[styleKey] || TILE_PROVIDERS.dark, { 
+                maxZoom: maxZoomLevel,
+                attribution: 'Tiles &copy; Esri'
+            }).addTo(map);
         }
 
         function initMap() {
@@ -316,7 +317,6 @@
             });
         }
 
-        // THE PULSE: OPEN/CLOSED LOGIC
         function getStatusHtml(closeHour) {
             if (!closeHour) return ''; 
             const currentHour = new Date().getHours();
@@ -328,7 +328,6 @@
             return `<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">🟢 OPEN NOW</span><br>`;
         }
 
-        // RENDER VIBE RADAR & MARKERS
         function renderCity() {
             const city = getActiveCity();
             markersLayer.clearLayers();
@@ -370,7 +369,6 @@
             map.closePopup();
         };
 
-        // ROUTE CALCULATION
         function calculateAndDrawRoutes(start, end) {
             if (safePolyline) map.removeLayer(safePolyline);
             if (fastPolyline) map.removeLayer(fastPolyline);
@@ -437,7 +435,6 @@
             if (fastPolyline) { fastPolyline.bringToFront(); fastPolyline.setStyle({ weight: 7, opacity: 1.0 }); safePolyline.setStyle({ weight: 5, opacity: 0.4 }); updateGoogleMapsButton(fastPolyline.getLatLngs().map(ll => [ll.lat, ll.lng])); }
         });
 
-        // SHARE MY WALK (WEB SHARE API)
         document.getElementById('shareRouteBtn').addEventListener('click', async () => {
             if (!currentEnd) return;
             const eta = selectedRouteMode === "safe" ? document.getElementById('safeTime').innerText : document.getElementById('fastTime').innerText;
@@ -452,7 +449,6 @@
             } catch (err) { console.log('Share failed:', err); }
         });
 
-        // UI INTERACTIONS
         document.getElementById('citySelect').addEventListener('change', e => {
             currentCityKey = e.target.value; const city = getActiveCity();
             map.setView(city.center, city.zoom); currentStart = city.defaultStart; renderCity();
@@ -504,7 +500,6 @@
         });
         document.getElementById('closeSosBtn').addEventListener('click', () => document.getElementById('sosModal').style.display = "none");
 
-        // START APP
         window.addEventListener('DOMContentLoaded', loadCityData);
     </script>
 </body>
