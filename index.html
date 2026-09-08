@@ -192,12 +192,13 @@
         .gmaps-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background: linear-gradient(135deg, #10b981, #059669);
-            color: white; text-decoration: none; border-radius: 8px;
-            padding: 10px; font-size: 13px; font-weight: 700;
+            color: white; border-radius: 8px;
+            padding: 11px; font-size: 13px; font-weight: 700;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             cursor: pointer;
             transition: opacity 0.2s;
         }
+        .gmaps-btn:active { opacity: 0.85; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 16px; }
         .modal-card { background: var(--surface-color); border: 1px solid var(--surface-border); border-radius: 14px; max-width: 440px; width: 100%; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
@@ -304,9 +305,9 @@
             </div>
 
             <!-- Google Maps Transfer Button -->
-            <a id="gmapsNavBtn" href="#" target="_blank" class="gmaps-btn">
+            <button id="gmapsNavBtn" type="button" class="gmaps-btn" style="width: 100%; border: none;">
                 <span>🗺️ Start This Route in Google Maps (Walking Directions)</span>
-            </a>
+            </button>
         </div>
 
         <div class="legal-link-footer" id="openDisclaimer">
@@ -374,7 +375,7 @@
                         { "name": "100 Montaditos", "lat": 41.3888, "lon": 2.1725, "price": "Pints from €2.00", "vibe": "Casual tapas franchise, student deals on Wed/Sun.", "door": "Free Entry" },
                         { "name": "Bar Manchester", "lat": 41.3805, "lon": 2.178, "price": "€1.50 Happy Hour", "vibe": "90s Indie/Britpop music, hipster/expat crowd.", "door": "Free Entry (19:00-22:00)" },
                         { "name": "L'Antic Teatre", "lat": 41.3872, "lon": 2.1765, "price": "€2.00 draft beers", "vibe": "Bohemian hidden garden courtyard, local artists.", "door": "Free Entry" },
-                        { "name": "Ambar", "lat": 41.3785, "lon": 2.169, "price": "€2.50 beer/wine", "vibe": "Retro 80s dive, relaxed mix of locals & expats.", "door": "Free Entry" },
+                        { "name": "Ambar", "lat": 41.3785, "lon": 2.169, "price": "€2.50 beer / wine", "vibe": "Retro 80s dive, relaxed mix of locals & expats.", "door": "Free Entry" },
                         { "name": "33/45", "lat": 41.3828, "lon": 2.1668, "price": "€2.50 - €3.00 beers", "vibe": "Vintage sofas, relaxed indie electronic chat.", "door": "Free Entry" },
                         { "name": "Taverna Blai Tonight", "lat": 41.3735, "lon": 2.162, "price": "€2.00 cañas", "vibe": "Dense pintxo bar street in Poble Sec, lively pre-dinner.", "door": "Free Entry" },
                         { "name": "Red Rocket Bar", "lat": 41.38, "lon": 2.1775, "price": "€1.00 beer before 22:00", "vibe": "Rockabilly & punk dive in Gothic quarter.", "door": "Free Entry" },
@@ -430,9 +431,9 @@
                         { "name": "Bar San Calisto", "lat": 41.8893, "lon": 12.4699, "price": "€3.00 - €4.00 large Peroni", "vibe": "Iconic dive, plastic chairs, chaotic piazza seating, local/student mix.", "door": "Free Entry (Cash Only)" },
                         { "name": "The Drunken Ship", "lat": 41.8956, "lon": 12.4722, "price": "€4.00 - €5.00 beers", "vibe": "Rowdy US study-abroad, beer pong, high energy.", "door": "Free Entry" },
                         { "name": "Almalu", "lat": 41.8905, "lon": 12.4685, "price": "€4.00 beers / €5 shots", "vibe": "Tiny, high-energy pre-game spot before Tiber walk.", "door": "Free Entry" },
-                        { "name": "VinAllegro", "lat": 41.89, "lon": 12.4735, "price": "€5 wine / €10-€12 Aperitivo", "vibe": "Cozy, wine-focused, budget dinner buffet alternative.", "door": "Free Entry" },
+                        { "name": "VinAllegro", "lat": 41.89, "lon": 12.4735, "price": "€5 wine / €10-€12 Aperitivo", "vibe": "Cozy wine bar, extensive cheap aperitivo buffet used by students as dinner.", "door": "Free Entry" },
                         { "name": "Scholars Lounge", "lat": 41.8965, "lon": 12.4805, "price": "€5.00 - €6.00 pints", "vibe": "Massive Irish pub, heavy university study-abroad crowd.", "door": "Free Entry" },
-                        { "name": "L'Oasi della Birra", "lat": 41.8795, "lon": 12.4775, "price": "€4.00 - €5.00 drafts", "vibe": "Cellar atmosphere, massive cheap bottle list.", "door": "Free Entry" },
+                        { "name": "L'Oasi della Birra", "lat": 41.8795, "lon": 12.4775, "price": "€4.00 - €5.00 drafts", "vibe": "Historic cellar atmosphere, hundreds of bottles, lively local student food/drink hub.", "door": "Free Entry" },
                         { "name": "ECB (Eternal City Brewing)", "lat": 41.875, "lon": 12.465, "price": "€4.00 craft beers", "vibe": "Indie taproom, local university crowd.", "door": "Free Entry" },
                         { "name": "The Basement (Prati)", "lat": 41.9065, "lon": 12.4605, "price": "€5.00 beers", "vibe": "Pub vibe, after-work and student sports.", "door": "Free Entry" },
                         { "name": "Shamrock", "lat": 41.8935, "lon": 12.49, "price": "€4.50 beers", "vibe": "Casual sports pub near Colosseum edge.", "door": "Free Entry" },
@@ -824,13 +825,26 @@
             map.fitBounds(group.getBounds(), { padding: [40, 40] });
         }
 
+        let currentGmapsUrl = "";
+
         function updateGoogleMapsButton(coords) {
+            if (!coords || coords.length < 2) return;
             const origin = `${coords[0][0]},${coords[0]}`;
             const dest = `${coords[coords.length-1][0]},${coords[coords.length-1]}`;
             const waypoints = coords.slice(1, -1).map(c => `${c[0].toFixed(5)},${c.toFixed(5)}`).join('|');
-            const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&waypoints=${encodeURIComponent(waypoints)}&travelmode=walking`;
-            document.getElementById('gmapsNavBtn').href = gmapsUrl;
+            currentGmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&waypoints=${encodeURIComponent(waypoints)}&travelmode=walking`;
         }
+
+        document.getElementById('gmapsNavBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!currentEnd) {
+                alert("Please select a destination first by searching or tapping on the map!");
+                return;
+            }
+            if (currentGmapsUrl) {
+                window.location.href = currentGmapsUrl;
+            }
+        });
 
         function clearActiveRoute() {
             if (safePolyline) map.removeLayer(safePolyline);
