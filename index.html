@@ -252,7 +252,202 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let CITIES_DATA = {};
+        // FULL ORIGINAL CITIES DATASET EMBEDDED DIRECTLY (NO MISSING PINS)
+        const CITIES_DATA = {
+        "barcelona": {
+                "name": "Barcelona 🇪🇸", "district": "Ciutat Vella • Eixample • Gràcia • Poble Sec • Barceloneta", "center": [41.387, 2.17], "zoom": 14,
+                "emergency": "112", "police": "Guàrdia Urbana / Mossos (Ciutat Vella, Carrer Nou de la Rambla, 76)",
+                "phrase": "¡Ayuda! Llame a la policía. (Catalan: Ajuda! Truqui a la policia.)",
+                "survivalTip": "Stick to wide avenues like Passeig de Gràcia or Via Laietana. Avoid unlit maze-like alleys in deep Raval (Carrer d'En Robador) and deep Gothic late at night.",
+                "water": [
+                        { "name": "Font de Canaletes (La Rambla)", "lat": 41.3853, "lon": 2.1701, "desc": "Historic 4-spout fountain at La Rambla top. 100% potable." },
+                        { "name": "Plaça Sant Jaume Fountain", "lat": 41.3828, "lon": 2.1774, "desc": "Municipal stone fountain built into Gothic plaza wall." },
+                        { "name": "Parc de la Ciutadella Water Station", "lat": 41.3882, "lon": 2.1874, "desc": "Park water station near Cascada Monument." },
+                        { "name": "Plaça Comercial Refill (El Born)", "lat": 41.386, "lon": 2.184, "desc": "Modern metal push-button fountain in Born square." },
+                        { "name": "Passeig del Born Basin", "lat": 41.3845, "lon": 2.1825, "desc": "Historic stone basin drinking fountain." }
+                ],
+                "bars": [
+                        { "name": "L'Ovella Negra", "lat": 41.3846, "lon": 2.1691, "price": "€1.20 caña / €10 pitcher", "vibe": "Loud Erasmus, rustic beer hall, huge communal tables.", "door": "Free Entry" },
+                        { "name": "Espit Chupitos", "lat": 41.3895, "lon": 2.1585, "price": "€2.00 - €2.50 shots", "vibe": "Pre-game, fire spectacles, 200 shot varieties.", "door": "Free Entry" },
+                        { "name": "Belushi's", "lat": 41.3858, "lon": 2.1678, "price": "€10 beer buckets", "vibe": "Sports bar, hostel party crowd, pool tables.", "door": "Free Entry (2-for-1 till midnight)" },
+                        { "name": "Dow Jones Bar", "lat": 41.3965, "lon": 2.1672, "price": "Drops < €2.00 on crashes", "vibe": "Interactive stock-market drink pricing gimmick.", "door": "Free Entry" },
+                        { "name": "100 Montaditos", "lat": 41.3888, "lon": 2.1725, "price": "Pints from €2.00", "vibe": "Casual tapas franchise, student deals on Wed/Sun.", "door": "Free Entry" },
+                        { "name": "Bar Manchester", "lat": 41.3805, "lon": 2.178, "price": "€1.50 Happy Hour", "vibe": "90s Indie/Britpop music, hipster/expat crowd.", "door": "Free Entry (19:00-22:00)" },
+                        { "name": "L'Antic Teatre", "lat": 41.3872, "lon": 2.1765, "price": "€2.00 draft beers", "vibe": "Bohemian hidden garden courtyard, local artists.", "door": "Free Entry" },
+                        { "name": "Ambar", "lat": 41.3785, "lon": 2.169, "price": "€2.50 beer / wine", "vibe": "Retro 80s dive, relaxed mix of locals & expats.", "door": "Free Entry" },
+                        { "name": "33/45", "lat": 41.3828, "lon": 2.1668, "price": "€2.50 - €3.00 beers", "vibe": "Vintage sofas, relaxed indie electronic chat.", "door": "Free Entry" },
+                        { "name": "Taverna Blai Tonight", "lat": 41.3735, "lon": 2.162, "price": "€2.00 cañas", "vibe": "Dense pintxo bar street in Poble Sec, lively pre-dinner.", "door": "Free Entry" },
+                        { "name": "Red Rocket Bar", "lat": 41.38, "lon": 2.1775, "price": "€1.00 beer before 22:00", "vibe": "Rockabilly & punk dive in Gothic quarter.", "door": "Free Entry" },
+                        { "name": "Bar Bodega Gol", "lat": 41.377, "lon": 2.1605, "price": "€2.20 glass of beer", "vibe": "Authentic local Catalan bodega, vermut & tapas.", "door": "Free Entry" },
+                        { "name": "La Bodega d'en Rafel", "lat": 41.376, "lon": 2.1585, "price": "€2.00 beer / €1 croquetas", "vibe": "Traditional neighborhood gem, zero pretension.", "door": "Free Entry" }
+                ],
+                "eats": [
+                        { "name": "Pizza del Born", "lat": 41.3848, "lon": 2.183, "price": "€1.90 per slice", "type": "Thick-crust pizza slices open past 1 AM." },
+                        { "name": "Las Muns (Raval)", "lat": 41.3835, "lon": 2.169, "price": "€3.00 empanadas", "type": "Argentine artisan empanadas." },
+                        { "name": "Da Nanni", "lat": 41.3832, "lon": 2.1765, "price": "€4.00 - €6.00 whole pizza", "type": "Authentic Neapolitan takeaway pizzas." },
+                        { "name": "Bisma Kebabish", "lat": 41.3815, "lon": 2.167, "price": "€5.00 menu", "type": "Chicken biryani & kebab with drink." },
+                        { "name": "Ciutat Comtal", "lat": 41.3888, "lon": 2.1665, "price": "€4.00 - €8.00 plates", "type": "Late-night tapas kitchen open till 1:30 AM." },
+                        { "name": "Mordisco", "lat": 41.3955, "lon": 2.1605, "price": "€10.00+ sandwiches", "type": "Late Mediterranean kitchen till 2 AM weekends." },
+                        { "name": "Casino Barcelona", "lat": 41.3865, "lon": 2.1965, "price": "€5.00 - €10.00", "type": "24/7 ground-floor burgers & baguettes near beach." },
+                        { "name": "Ugarit (Gràcia)", "lat": 41.4055, "lon": 2.1585, "price": "€5.00 - €9.00", "type": "Late-night Syrian kebabs & falafel wraps." }
+                ],
+                "scam": [
+                        { "title": "Sagrada Família Fake Petition", "lat": 41.4036, "lon": 2.1744, "desc": "Accomplice thrusts clipboard up to block view while picking lower pockets." },
+                        { "title": "La Rambla Shell Game (Trilero)", "lat": 41.378, "lon": 2.176, "desc": "Accomplices pose as winners; tourists who stop get pickpocketed from behind." },
+                        { "title": "Barceloneta Beach Towel Lift & Fake Massage", "lat": 41.3765, "lon": 2.1895, "desc": "Thieves offer unwanted late-night massages to intoxicated walkers to pick pockets." },
+                        { "title": "Sants Estació Escalator Jam", "lat": 41.379, "lon": 2.14, "desc": "Scammer stops abruptly at top of escalator causing pile-up while accomplices unzip bags." },
+                        { "title": "Barri Gòtic Deep Alleys", "lat": 41.381, "lon": 2.177, "desc": "Maze-like lanes off Plaça Reial thin out after 11 PM, leading to phone snatches." }
+                ],
+                "defaultStart": { "name": "Plaça de Catalunya", "lat": 41.387, "lon": 2.17 }
+        },
+        "rome": {
+                "name": "Rome 🇮🇹", "district": "Centro Storico • Trastevere • Monti • San Lorenzo • Testaccio", "center": [41.893, 12.475], "zoom": 14,
+                "emergency": "112", "police": "Polizia di Stato - Ufficio Turismo (Via del Corso, 482, 00186 Roma)",
+                "phrase": "Emergenza! Chiamate la polizia! (Medical: Ho bisogno di un dottore. Portatemi al pronto soccorso.)",
+                "survivalTip": "Stick to Viale di Trastevere or Corso Vittorio Emanuele II. Avoid dark alleys off Termini (Via Giolitti) and desolate riverbank stairs late at night.",
+                "water": [
+                        { "name": "Pantheon Fountain (Piazza della Rotonda)", "lat": 41.8986, "lon": 12.4769, "desc": "Renaissance fountain at central obelisk. 100% ice-cold aqueduct water." },
+                        { "name": "Fontana delle Anfore (Testaccio)", "lat": 41.879, "lon": 12.477, "desc": "Carved stone amphoras fountain honoring ancient pottery commerce." },
+                        { "name": "Fontana della Botte (Trastevere)", "lat": 41.8895, "lon": 12.469, "desc": "Artistic barrel fountain in Via della Cisterna, continuous drinkable water." },
+                        { "name": "Fontana dei Libri (Sant'Eustachio)", "lat": 41.8975, "lon": 12.4745, "desc": "Carved stone books fountain near ancient university district." },
+                        { "name": "Fontana della Pigna (Piazza Venezia)", "lat": 41.896, "lon": 12.4815, "desc": "Historic pinecone fountain symbol of Pigna district." },
+                        { "name": "Colosseum Municipal Chilled Dispenser", "lat": 41.8905, "lon": 12.4925, "desc": "Modern chilled drinking water dispenser near monument entrance." },
+                        { "name": "Villa Borghese (Lupa Imperiale)", "lat": 41.912, "lon": 12.486, "desc": "She-wolf spout historic park fountain. 100% potable." },
+                        { "name": "Piazza Trilussa Nasone", "lat": 41.8905, "lon": 12.4705, "desc": "Trastevere meeting fountain. Plug bottom hole with thumb to drink from top!" }
+                ],
+                "bars": [
+                        { "name": "Bar San Calisto", "lat": 41.8893, "lon": 12.4699, "price": "€3.00 - €4.00 large Peroni", "vibe": "Iconic dive, plastic chairs, chaotic piazza seating, local/student mix.", "door": "Free Entry (Cash Only)" },
+                        { "name": "The Drunken Ship", "lat": 41.8956, "lon": 12.4722, "price": "€4.00 - €5.00 beers", "vibe": "Rowdy US study-abroad, beer pong, high energy.", "door": "Free Entry" },
+                        { "name": "Almalu", "lat": 41.8905, "lon": 12.4685, "price": "€4.00 beers / €5 shots", "vibe": "Tiny, high-energy pre-game spot before Tiber walk.", "door": "Free Entry" },
+                        { "name": "VinAllegro", "lat": 41.89, "lon": 12.4735, "price": "€5 wine / €10-€12 Aperitivo", "vibe": "Cozy wine bar, extensive cheap aperitivo buffet used by students as dinner.", "door": "Free Entry" },
+                        { "name": "Scholars Lounge", "lat": 41.8965, "lon": 12.4805, "price": "€5.00 - €6.00 pints", "vibe": "Massive Irish pub, heavy university study-abroad crowd.", "door": "Free Entry" },
+                        { "name": "L'Oasi della Birra", "lat": 41.8795, "lon": 12.4775, "price": "€4.00 - €5.00 drafts", "vibe": "Cellar atmosphere, massive cheap bottle list.", "door": "Free Entry" },
+                        { "name": "ECB (Eternal City Brewing)", "lat": 41.875, "lon": 12.465, "price": "€4.00 craft beers", "vibe": "Indie taproom, local university crowd.", "door": "Free Entry" },
+                        { "name": "The Basement (Prati)", "lat": 41.9065, "lon": 12.4605, "price": "€5.00 beers", "vibe": "Pub vibe, after-work and student sports.", "door": "Free Entry" },
+                        { "name": "Shamrock", "lat": 41.8935, "lon": 12.49, "price": "€4.50 beers", "vibe": "Casual sports pub near Colosseum edge.", "door": "Free Entry" },
+                        { "name": "Abbey Theatre", "lat": 41.899, "lon": 12.4705, "price": "€5.00 drinks", "vibe": "Karaoke, rowdy study abroad crowd.", "door": "Free Entry" },
+                        { "name": "Baccanale Trastevere", "lat": 41.8895, "lon": 12.4715, "price": "€5.00 drinks", "vibe": "Casual student hangout in central Trastevere.", "door": "Free Entry" },
+                        { "name": "New Devil'S Kiss", "lat": 41.8995, "lon": 12.518, "price": "€5.00 drinks", "vibe": "Neighborhood university dive in San Lorenzo.", "door": "Free Entry" },
+                        { "name": "Blue Bar (San Lorenzo)", "lat": 41.898, "lon": 12.516, "price": "€3.50 drinks", "vibe": "Heavily attended La Sapienza student hub.", "door": "Free Entry" },
+                        { "name": "Cheap Bar (Navona)", "lat": 41.8975, "lon": 12.4725, "price": "Ultra-low price drinks", "vibe": "Pre-game stop before Campo de' Fiori.", "door": "Free Entry" }
+                ],
+                "eats": [
+                        { "name": "Bar San Calisto (Kitchen)", "lat": 41.8893, "lon": 12.4699, "price": "€4.00 - €6.00", "type": "Open till 1:30 AM / Pasta (Penne Napoletana) & desserts." },
+                        { "name": "Caffè Tevere (Testaccio)", "lat": 41.881, "lon": 12.475, "price": "€2.00 - €4.00", "type": "Late-night pizza al taglio & hot cornettos." },
+                        { "name": "La Boccaccia (Trastevere)", "lat": 41.891, "lon": 12.47, "price": "€3.00 - €5.00", "type": "Late-night hot pizza al taglio slices." },
+                        { "name": "Pinsere", "lat": 41.9075, "lon": 12.498, "price": "€5.00 - €7.00", "type": "Budget Roman-style crispy oval pinsa." },
+                        { "name": "Zozzone Food Trucks", "lat": 41.876, "lon": 12.482, "price": "€4.00", "type": "Food trucks open till 4:00 AM selling porchetta sandwiches." },
+                        { "name": "Ali Baba Kebab", "lat": 41.901, "lon": 12.525, "price": "€5.00", "type": "24/7 huge kebab wraps in San Lorenzo." },
+                        { "name": "Pizzeria Florida", "lat": 41.8955, "lon": 12.477, "price": "€3.00 - €5.00", "type": "Walk-up pizza slices near late-night transit." },
+                        { "name": "Necci dal 1924", "lat": 41.888, "lon": 12.532, "price": "Affordable bar food", "type": "Bar/kitchen operating till 1:00 AM in Pigneto." }
+                ],
+                "scam": [
+                        { "title": "Trevi / Spanish Steps Rose Thrust", "lat": 41.9009, "lon": 12.4833, "desc": "Vendors force a rose into hands as a 'free gift', then aggressively demand payment causing scenes." },
+                        { "title": "Colosseum Fake Gladiators & Bracelets", "lat": 41.8905, "lon": 12.4915, "desc": "Men in plastic armor demand €20 after photo; others tie bracelets tightly to wrists demanding cash." },
+                        { "title": "Termini Unofficial Taxi Rank", "lat": 41.901, "lon": 12.5, "desc": "Unlicensed drivers intercept travelers before official queue offering 'flat rates' that triple the meter." },
+                        { "title": "Piazza Navona Coperto Abuse", "lat": 41.899, "lon": 12.4735, "desc": "Exorbitant hidden table fees and mandatory gratuity not listed on exterior menu." },
+                        { "title": "Tiburtina / Ostiense Stations Pickpockets", "lat": 41.91, "lon": 12.53, "desc": "High foot-traffic transit zones favored by pickpockets during train boarding." }
+                ],
+                "defaultStart": { "name": "Pantheon", "lat": 41.8986, "lon": 12.4769 }
+        },
+        "london": {
+                "name": "London 🇬🇧", "district": "Soho • Covent Garden • Camden Town • Shoreditch • Hackney", "center": [51.5134, -0.13], "zoom": 14,
+                "emergency": "999 or 112", "police": "Charing Cross Police Station (2 Agar St, London WC2N 4JP - 24/7 Open)",
+                "phrase": "Help! Call the police! (Shout loudly towards CCTV cameras or seek any open tube station).",
+                "survivalTip": "Use illuminated spines: Oxford St, Charing Cross Rd, or The Strand. Avoid pitch-black Camden Lock towpaths and dark Shoreditch side alleys at 2 AM.",
+                "water": [
+                        { "name": "Trafalgar Square Refill Station", "lat": 51.508, "lon": -0.1281, "desc": "Modern Mayor's Office blue water refill station near Fourth Plinth." },
+                        { "name": "Covent Garden Apple Market Refill", "lat": 51.5117, "lon": -0.1232, "desc": "Official Refill London station embedded in pedestrian market." },
+                        { "name": "Borough Market Drinking Fountain", "lat": 51.5055, "lon": -0.091, "desc": "Public drinking fountains beside the central market stalls." },
+                        { "name": "Hyde Park (Speakers' Corner)", "lat": 51.5115, "lon": -0.1585, "desc": "Royal Parks traditional green stone fountain. 100% potable." },
+                        { "name": "St Pancras International Refill", "lat": 51.5315, "lon": -0.126, "desc": "Modern public water bottle refill station near station concourse." },
+                        { "name": "Natural History Museum Refill", "lat": 51.4965, "lon": -0.1765, "desc": "Exterior modern bottle refill stations." },
+                        { "name": "Shoreditch Park Refill Station", "lat": 51.5355, "lon": -0.088, "desc": "Modern Thames Water refill station in park." }
+                ],
+                "bars": [
+                        { "name": "Simmons Bar (Soho)", "lat": 51.514, "lon": -0.1325, "price": "£4.00 pints / £2.50 bottles", "vibe": "Neon kitsch decor, drinks in teapots, young student party crowd.", "door": "Free Entry (Happy Hour 16:00-21:00)" },
+                        { "name": "The Glasshouse Stores", "lat": 51.5115, "lon": -0.136, "price": "£4.00 - £4.50 pints", "vibe": "Samuel Smith tied-house. Victorian interior, strictly no mobile phones.", "door": "Free Entry" },
+                        { "name": "The John Snow", "lat": 51.5135, "lon": -0.1365, "price": "£4.00 - £4.50 pints", "vibe": "Historic Soho pub, famously cheap Samuel Smith pints, zero electronic distractions.", "door": "Free Entry" },
+                        { "name": "Thirst Soho", "lat": 51.513, "lon": -0.1315, "price": "£4 - £6 cocktails", "vibe": "Stupid Hour (16-18) brings drastic cuts; transitions to basement club.", "door": "Free Entry Early" },
+                        { "name": "Five Points Taproom", "lat": 51.541, "lon": -0.058, "price": "£3.99 pints (Thu/Fri 17-19)", "vibe": "Independent brewery taproom, tank beer, East London hipster crowd.", "door": "Free Entry" },
+                        { "name": "The Good Mixer", "lat": 51.539, "lon": -0.1435, "price": "£5.00 pints (Moretti/Corona)", "vibe": "Legendary Britpop music pub (Blur/Oasis history), pool tables, indie/punk.", "door": "Free Entry" },
+                        { "name": "The Hanbury (Islington)", "lat": 51.535, "lon": -0.098, "price": "£4.70 pints (Amstel)", "vibe": "Classic neighborhood pub allowing cheap drinking just outside Shoreditch.", "door": "Free Entry" },
+                        { "name": "The Cardinal Bar", "lat": 51.51, "lon": -0.076, "price": "£2.00 pints (Fri 15:00-19:00)", "vibe": "After-work budget bar in Aldgate/City border.", "door": "Free Entry" },
+                        { "name": "Azura (Camden)", "lat": 51.542, "lon": -0.142, "price": "£5.00 beers / £1 entry Thu", "vibe": "Fast-paced party, student budget drink deals.", "door": "Cheap Entry" },
+                        { "name": "Be At One (Greek St)", "lat": 51.5145, "lon": -0.131, "price": "2-for-1 Cocktails Happy Hour", "vibe": "High-volume, bartenders ice-tossing, extremely popular with students.", "door": "Free Entry" },
+                        { "name": "FAM Bar (Marylebone)", "lat": 51.516, "lon": -0.151, "price": "£4.00 draught (16:00-18:00)", "vibe": "Cocktail fanatics, relaxed pre-game.", "door": "Free Entry" },
+                        { "name": "Bar Rumba (West End)", "lat": 51.511, "lon": -0.132, "price": "£2.50 beers / £5 doubles", "vibe": "Subterranean late-night party club.", "door": "Cheap Early Entry" }
+                ],
+                "eats": [
+                        { "name": "VQ Chelsea", "lat": 51.487, "lon": -0.181, "price": "£10.00 - £15.00", "type": "24/7 Full diner menu (Burgers, breakfast)." },
+                        { "name": "VQ Bloomsbury", "lat": 51.518, "lon": -0.129, "price": "£10.00 - £15.00", "type": "24/7 Full diner menu near British Museum." },
+                        { "name": "Beigel Bake (Brick Lane)", "lat": 51.524, "lon": -0.0715, "price": "£3.00 - £6.00", "type": "24/7 Legendary salt beef and smoked salmon bagels." },
+                        { "name": "Beigel Shop (Yellow Sign)", "lat": 51.5242, "lon": -0.0714, "price": "£3.00 - £6.00", "type": "24/7 Traditional Brick Lane Jewish bakery." },
+                        { "name": "Polo Bar (Bishopsgate)", "lat": 51.5185, "lon": -0.0815, "price": "£8.00 - £12.00", "type": "24/7 Great British cafe classics opposite Liverpool St." },
+                        { "name": "El Camion (Soho)", "lat": 51.5125, "lon": -0.1345, "price": "£8.00 - £12.00", "type": "Mexican tacos & burritos open till 3:00 AM." },
+                        { "name": "Balans (Old Compton St)", "lat": 51.513, "lon": -0.131, "price": "£12.00 - £18.00", "type": "24/7 laid-back Soho brasserie." },
+                        { "name": "Cecconi's Pizza Bar", "lat": 51.5132, "lon": -0.1315, "price": "£12.00 - £16.00", "type": "Late-night pizza and arancini till 3:00 AM." },
+                        { "name": "Duck & Waffle", "lat": 51.516, "lon": -0.081, "price": "£15.00 - £25.00", "type": "24/7 iconic 40th-floor late-night dining." }
+                ],
+                "scam": [
+                        { "title": "Westminster Bridge Three-Card Monte", "lat": 51.501, "lon": -0.122, "desc": "Organized gangs use cups and cardboard boxes. The game is 100% rigged while accomplices pickpocket observers." },
+                        { "title": "Leicester Square Fake Buddhist Monks", "lat": 51.5104, "lon": -0.1301, "desc": "Men in orange robes press a 'peace medallion' into hands, aggressively demanding £10-£20 'donations'." },
+                        { "title": "Soho Deep Alleys Clip Joint Extortion", "lat": 51.512, "lon": -0.133, "desc": "Promoters lure young men to unmarked doors for 'cheap drinks'; victims are extorted for £500 champagne bills by bouncers." },
+                        { "title": "Covent Garden Pedicab Price Gouging", "lat": 51.511, "lon": -0.124, "desc": "Rickshaws obscure rates, then demand £50-£100 for a 5-minute ride with aggressive intimidation." },
+                        { "title": "Shoreditch / Hackney Moped Phone Snatching", "lat": 51.526, "lon": -0.078, "desc": "Thieves on mopeds mount pavement to snatch phones out of hands of intoxicated walkers." }
+                ],
+                "defaultStart": { "name": "Leicester Square", "lat": 51.5104, "lon": -0.1301 }
+        },
+        "new_york": {
+                "name": "New York City 🇺🇸", "district": "Lower East Side • East Village • West Village • Williamsburg • Bushwick • Midtown", "center": [40.73, -73.99], "zoom": 14,
+                "emergency": "911", "police": "NYPD Midtown South Precinct (357 W 35th St) or 9th Precinct (321 E 5th St, East Village)",
+                "phrase": "Help! Call 911! (Or step inside any 24-hour illuminated bodega; clerks offer safe sanctuary).",
+                "survivalTip": "Use wide illuminated avenues (Broadway, 5th Ave, 7th Ave). Avoid dark interior paths of Tompkins Square Park after 1 AM, and stay west of Avenue C.",
+                "water": [
+                        { "name": "Washington Square Park Fountains", "lat": 40.7308, "lon": -73.9973, "desc": "Metal public fountains near the Arch and dog runs. 100% potable." },
+                        { "name": "Union Square Park Refill Station", "lat": 40.7359, "lon": -73.9911, "desc": "Modern refill stations near the Greenmarket area." },
+                        { "name": "Central Park (Bethesda Terrace)", "lat": 40.7738, "lon": -73.9708, "desc": "Historic stone pedestal fountains with continuous Catskill reservoir water." },
+                        { "name": "Times Square Pedestrian Plaza", "lat": 40.758, "lon": -73.9855, "desc": "Standard municipal push-button fountains in pedestrian zone." },
+                        { "name": "Tompkins Square Park Fountains", "lat": 40.7265, "lon": -73.9818, "desc": "Standard green NYC Parks Department drinking fountains." },
+                        { "name": "Brooklyn Bridge Park Refills", "lat": 40.702, "lon": -73.996, "desc": "Modern bottle refill stations along the waterfront piers." },
+                        { "name": "McCarren Park (Williamsburg)", "lat": 40.72, "lon": -73.953, "desc": "Green municipal drinking fountains." },
+                        { "name": "High Line Elevated Park Fountains", "lat": 40.748, "lon": -74.005, "desc": "Modern sleek water fountains along the elevated rail trail." }
+                ],
+                "bars": [
+                        { "name": "McSorley's Old Ale House", "lat": 40.7288, "lon": -73.9897, "price": "$8 for TWO pints ($4 ea)", "vibe": "NYC's oldest Irish tavern (1854). Sawdust floors, only serves Light or Dark ale, historic & packed.", "door": "Free Entry (Cash Only)" },
+                        { "name": "169 Bar (Lower East Side)", "lat": 40.7138, "lon": -73.9902, "price": "$4 - $5 beer & shot combo", "vibe": "Neon-lit eclectic, pool table, cheap oysters, NYU students.", "door": "Free Entry" },
+                        { "name": "Blue & Gold Tavern", "lat": 40.7275, "lon": -73.9845, "price": "$5.00 beer & shot deal", "vibe": "Dark dive, cheap whiskey, university heavy, zero pretension.", "door": "Free Entry" },
+                        { "name": "Clockwork Bar (LES)", "lat": 40.7155, "lon": -73.9915, "price": "$5.00 beer & shot special", "vibe": "Gritty punk rock dive, graffiti-covered walls, loud rock.", "door": "Free Entry (Cash Only)" },
+                        { "name": "Rudy's Bar & Grill", "lat": 40.7595, "lon": -73.9915, "price": "$3.00 - $5.00 pints", "vibe": "Historic dive, famous for a free hotdog with every cheap drink purchase.", "door": "Free Entry" },
+                        { "name": "The Library (East Village)", "lat": 40.723, "lon": -73.984, "price": "$5.00 - $6.00 beers", "vibe": "Literary grunge, punk rock jukebox, vintage B-movies.", "door": "Free Entry" },
+                        { "name": "B-Side (Avenue B)", "lat": 40.7285, "lon": -73.9785, "price": "$5.00 Citywide Special", "vibe": "Classic Ave B local youth dive, cheap drafts, pool table.", "door": "Free Entry" },
+                        { "name": "Alligator Lounge (Williamsburg)", "lat": 40.714, "lon": -73.949, "price": "$6.00 - $8.00 pints", "vibe": "Free personal pizza with every beer! Heavy hipster/student vibe.", "door": "Free Entry" },
+                        { "name": "Welcome to the Johnsons", "lat": 40.72, "lon": -73.987, "price": "$3.00 PBRs", "vibe": "1970s suburban basement aesthetic, super cheap.", "door": "Free Entry" },
+                        { "name": "Bushwick Country Club", "lat": 40.7125, "lon": -73.951, "price": "$5.00 beer & shot combos", "vibe": "Slushie machines, mini-golf dive bar.", "door": "Free Entry" },
+                        { "name": "Double Down Saloon", "lat": 40.7245, "lon": -73.9845, "price": "$4.00 - $5.00 specials", "vibe": "Punk dive, famous for 'Ass Juice' shots.", "door": "Free Entry" },
+                        { "name": "Sophie's (East Village)", "lat": 40.725, "lon": -73.986, "price": "$4.00 - $5.00 drafts", "vibe": "No-frills old-school NYC dive, pool table.", "door": "Free Entry" }
+                ],
+                "eats": [
+                        { "name": "2 Bros Pizza (St Marks)", "lat": 40.729, "lon": -73.988, "price": "$1.50 - $2.00 slice", "type": "Classic late-night slice on St. Marks Place." },
+                        { "name": "Mamoun's Falafel (MacDougal)", "lat": 40.7295, "lon": -74.0005, "price": "$5.00 - $6.00 sandwich", "type": "Open till 3:00 AM in Greenwich Village." },
+                        { "name": "Veselka (East Village)", "lat": 40.729, "lon": -73.987, "price": "$9.00 pierogis", "type": "Ukrainian pierogis and late-night comfort food." },
+                        { "name": "Coppelia (Chelsea)", "lat": 40.738, "lon": -73.999, "price": "$4.00 empanadas", "type": "24/7 Cuban diner on 14th St." },
+                        { "name": "Katz's Delicatessen", "lat": 40.7222, "lon": -73.9874, "price": "Iconic pastrami", "type": "Open 24 hours on weekends on Houston St." },
+                        { "name": "Vanessa's Dumpling House", "lat": 40.7145, "lon": -73.9605, "price": "4 dumplings for $3.00", "type": "Chive & pork dumplings open late weekends." },
+                        { "name": "Empanada Mama (Hell's Kitchen)", "lat": 40.7635, "lon": -73.9885, "price": "$4.00 - $5.00", "type": "24/7 Latin American empanadas on 9th Ave." },
+                        { "name": "Typical Corner Bodega", "lat": 40.728, "lon": -73.985, "price": "$5.00 - $7.00", "type": "24/7 Chopped Cheese or Bacon Egg & Cheese sandwich." }
+                ],
+                "scam": [
+                        { "title": "Times Square CD Bully & Costumed Characters", "lat": 40.758, "lon": -73.9855, "desc": "Men thrust 'free' music CDs into hands, then 3-4 accomplices surround you demanding a $20 tip." },
+                        { "title": "Staten Island Ferry Fake Tickets (South Ferry)", "lat": 40.701, "lon": -74.0135, "desc": "Scammers in yellow safety vests sell $20 tickets for a ferry that is actually 100% free!" },
+                        { "title": "Battery Park Pedicab Price Gouging", "lat": 40.7035, "lon": -74.016, "desc": "Pedicabs conceal tiny 'per minute per person' clauses, then demand $100+ after a brief ride." },
+                        { "title": "Midtown Broken Glasses Drop", "lat": 40.753, "lon": -73.988, "desc": "A scammer deliberately bumps into a tourist, drops pre-broken glasses, and aggressively demands cash reimbursement." },
+                        { "title": "Subway Turnstile Swipe Scam", "lat": 40.752, "lon": -73.989, "desc": "Scammers jam ticket machines and offer to swipe you in for cash, then walk away." }
+                ],
+                "defaultStart": { "name": "Washington Square Park", "lat": 40.7308, "lon": -73.9973 }
+        }
+        };
+
         let currentCityKey = "barcelona";
         let map;
         let safePolyline = null, fastPolyline = null;
@@ -263,24 +458,11 @@
         let debounceTimer = null;
         let currentTileLayer = null;
 
-        // FREE API-KEY-FREE ESRI & OPENSTREETMAP TILE PROVIDERS
         const TILE_PROVIDERS = {
             dark: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
             light: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
             satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         };
-
-        async function loadCityData() {
-            try {
-                const response = await fetch('./data/cities.json');
-                if (!response.ok) throw new Error("JSON Fetch Failed");
-                CITIES_DATA = await response.json();
-                initMap();
-            } catch (error) {
-                console.error(error);
-                alert("Failed to load LitWalk data. Check connection.");
-            }
-        }
 
         function getActiveCity() { return CITIES_DATA[currentCityKey]; }
 
@@ -317,17 +499,6 @@
             });
         }
 
-        function getStatusHtml(closeHour) {
-            if (!closeHour) return ''; 
-            const currentHour = new Date().getHours();
-            if (currentHour === closeHour || currentHour === closeHour - 1) {
-                return `<span style="background: rgba(245, 158, 11, 0.15); color: #d97706; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">🟠 CLOSING SOON</span><br>`;
-            } else if ((currentHour >= closeHour && currentHour < 12) && closeHour < 12) {
-                return `<span style="background: rgba(239, 68, 68, 0.15); color: #ef4444; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">🔴 CLOSED</span><br>`;
-            }
-            return `<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">🟢 OPEN NOW</span><br>`;
-        }
-
         function renderCity() {
             const city = getActiveCity();
             markersLayer.clearLayers();
@@ -337,16 +508,11 @@
                 if(!data) return;
                 data.forEach(item => {
                     const icon = createCustomIcon(iconChar, color);
-                    const statusHtml = getStatusHtml(item.closes);
-                    const tagsHtml = item.tags ? item.tags.map(t => `<span style="display:inline-block; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin: 4px 4px 4px 0; text-transform:uppercase;">${t}</span>`).join('') : '';
-
                     const m = L.marker([item.lat, item.lon], { icon }).bindPopup(`
                         <div style="font-size: 14px; color: #0f172a; padding: 4px; min-width: 200px;">
-                            ${statusHtml}
                             <strong style="color: ${color}; font-size: 16px;">${iconChar} ${item.name || item.title}</strong><br>
                             ${item.price ? `<span style="font-weight: 800; color: #16a34a;">💰 ${item.price}</span><br>` : ''}
-                            <div>${tagsHtml}</div>
-                            <p style="font-size: 12px; color: #475569; margin-top: 4px;">${item.vibe || item.desc}</p>
+                            <p style="font-size: 12px; color: #475569; margin-top: 4px;">${item.vibe || item.type || item.desc}</p>
                             ${item.name ? `<button onclick="setDestination(${item.lat}, ${item.lon}, '${item.name.replace(/'/g, "\\'")}')" style="margin-top: 12px; width: 100%; background: ${color}; color: white; border: none; border-radius: 8px; padding: 10px; font-weight: 700; cursor: pointer;">🚶 Route Here</button>` : ''}
                         </div>
                     `);
@@ -491,6 +657,7 @@
         document.getElementById('acceptDisclaimerBtn').addEventListener('click', () => { localStorage.setItem('litwalk_legal', 'true'); document.getElementById('disclaimerModal').style.display = "none"; });
         document.getElementById('openDisclaimer').addEventListener('click', () => document.getElementById('disclaimerModal').style.display = "flex");
 
+        document.getElementById('sosBtn').accepted = () => {};
         document.getElementById('sosBtn').addEventListener('click', () => {
             const city = getActiveCity();
             document.getElementById('sosCityTitle').innerText = city.name + " SOS";
@@ -500,7 +667,7 @@
         });
         document.getElementById('closeSosBtn').addEventListener('click', () => document.getElementById('sosModal').style.display = "none");
 
-        window.addEventListener('DOMContentLoaded', loadCityData);
+        window.addEventListener('DOMContentLoaded', initMap);
     </script>
 </body>
 </html>
