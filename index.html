@@ -1,379 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LitWalk — Global Student Nightlife & Well-Lit Walking Radar</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        :root {
-            --bg-dark: #0b0f19; --glass-bg: rgba(15, 23, 42, 0.75); --glass-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #f8fafc; --text-secondary: #94a3b8; --safe-color: #10b981; --safe-glow: rgba(16, 185, 129, 0.4);
-            --balanced-color: #38bdf8; --balanced-glow: rgba(56, 189, 248, 0.4); --fast-color: #f59e0b;
-            --fast-glow: rgba(245, 158, 11, 0.4); --primary: #38bdf8; --danger: #ef4444;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-dark); color: var(--text-primary); height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>LitWalk – Global Student Nightlife & Safety Radar</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --glass-bg: rgba(15, 23, 42, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --primary: #38bdf8;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
 
-        #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: var(--bg-dark); }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-primary); height: 100vh; overflow: hidden; }
 
-        .top-hud { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 1000; pointer-events: none; }
-        .top-left-controls, .top-right-controls { display: flex; flex-direction: column; gap: 8px; pointer-events: auto; }
-        .top-right-controls { align-items: flex-end; }
-        .glass-pill { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 8px 12px; color: var(--text-primary); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; outline: none; box-shadow: 0 4px 16px rgba(0,0,0,0.3); transition: all 0.2s; }
-        .glass-pill:active { transform: scale(0.96); }
-        select.glass-pill { appearance: none; padding-right: 28px; background-image: url('data:image/svg+xml;utf8,<svg fill="%23f8fafc" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 4px center; }
-        .sos-btn { background: rgba(153, 27, 27, 0.85); border-color: rgba(239, 68, 68, 0.4); color: #fecaca; }
+    #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        .bottom-hud { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); border-radius: 24px 24px 0 0; padding: 16px 16px max(16px, env(safe-area-inset-bottom)) 16px; z-index: 1000; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
-        .search-row { display: flex; gap: 8px; align-items: center; position: relative; }
-        .search-input-wrapper { flex: 1; position: relative; }
-        .search-input { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 12px 14px 12px 36px; border-radius: 12px; font-size: 14px; outline: none; transition: border-color 0.2s; }
-        .search-input:focus { border-color: var(--primary); background: rgba(255, 255, 255, 0.1); }
-        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-secondary); }
-        .gps-btn { background: rgba(2, 132, 199, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); color: white; border-radius: 12px; padding: 12px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    /* Top HUD / Controls */
+    .top-controls {
+      position: absolute; top: 16px; left: 16px; right: 16px; z-index: 1000;
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .top-controls::-webkit-scrollbar { display: none; }
 
-        .suggestions-dropdown { position: absolute; bottom: calc(100% + 12px); left: 0; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 12px; max-height: 250px; overflow-y: auto; box-shadow: 0 -8px 32px rgba(0,0,0,0.6); z-index: 2000; display: none; }
-        .suggestion-item { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
-        .suggestion-item:hover { background: rgba(56, 189, 248, 0.15); }
-        .sug-left { display: flex; flex-direction: column; gap: 4px; }
-        .sug-title { font-weight: 600; font-size: 14px; color: var(--text-primary); }
-        .sug-sub { font-size: 12px; color: var(--text-secondary); }
+    .filter-btn, .action-btn {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border); color: var(--text-primary);
+      padding: 10px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      white-space: nowrap; cursor: pointer; transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .filter-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+    .action-btn.transit-btn { background: rgba(56, 189, 248, 0.2); border-color: var(--primary); color: var(--primary); }
 
-        .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-        .filter-row::-webkit-scrollbar { display: none; }
-        .filter-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-        .filter-chip.active.bars { background: rgba(180, 83, 9, 0.9); border-color: #f59e0b; color: #ffffff; }
-        .filter-chip.active.eats { background: rgba(190, 18, 60, 0.9); border-color: #f43f5e; color: #ffffff; }
-        .filter-chip.active.water { background: rgba(2, 132, 199, 0.9); border-color: #38bdf8; color: #ffffff; }
-        .filter-chip.active.scam { background: rgba(153, 27, 27, 0.9); border-color: #ef4444; color: #ffffff; }
+    /* Transit Hacks Drawer */
+    .drawer {
+      position: absolute; bottom: -100%; left: 0; right: 0; max-height: 70vh;
+      background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--glass-border); border-radius: 20px 20px 0 0;
+      padding: 20px; z-index: 2000; transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto; color: var(--text-primary);
+    }
+    .drawer.open { bottom: 0; }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .drawer-header h2 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
+    .close-btn { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
 
-        .route-view { display: none; flex-direction: column; gap: 10px; }
-        .sheet-title-row { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
-        .sheet-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .clear-route-btn { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        
-        .routes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        @media (max-width: 600px) { .routes-grid { grid-template-columns: 1fr; } }
-        
-        .route-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 14px; padding: 10px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .route-card.active-safe { border-color: var(--safe-color); background: rgba(16, 185, 129, 0.06); box-shadow: 0 0 16px var(--safe-glow); }
-        .route-card.active-balanced { border-color: var(--balanced-color); background: rgba(56, 189, 248, 0.06); box-shadow: 0 0 16px var(--balanced-glow); }
-        .route-card.active-fast { border-color: var(--fast-color); background: rgba(245, 158, 11, 0.06); box-shadow: 0 0 16px var(--fast-glow); }
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-        .card-tag { font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 6px; text-transform: uppercase; }
-        .tag-safe { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .tag-balanced { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; }
-        .tag-fast { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-        .route-time { font-size: 20px; font-weight: 800; color: var(--text-primary); }
-        .route-dist { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
-        .index-badge { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; font-size: 11px; font-weight: 700; }
-        .score-num { padding: 2px 5px; border-radius: 6px; }
-        .score-high { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .score-med { background: rgba(56, 189, 248, 0.2); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.3); }
-        .score-low { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .hack-card {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 14px; margin-bottom: 12px;
+    }
+    .hack-card h3 { font-size: 14px; margin-bottom: 6px; color: var(--primary); }
+    .hack-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
 
-        .share-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(56, 189, 248, 0.4); color: var(--primary); border-radius: 12px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 2px; }
-        .share-btn:active { transform: scale(0.98); background: rgba(56, 189, 248, 0.2); }
-        .gmaps-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 700; text-decoration: none; }
-        .legal-link-footer { font-size: 11px; color: #64748b; text-align: center; margin-top: 6px; cursor: pointer; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 16px; }
-        .modal-card { background: #151d30; border: 1px solid var(--glass-border); border-radius: 20px; max-width: 440px; width: 100%; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .accept-btn { width: 100%; background: #0284c7; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; }
-        
-        .leaflet-control-zoom { border: none !important; box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important; margin-bottom: 220px !important; }
-        .leaflet-bar a { background: var(--glass-bg) !important; color: white !important; backdrop-filter: blur(8px); border: 1px solid var(--glass-border) !important; }
-    </style>
+    /* Custom Map Popup Styling */
+    .leaflet-popup-content-wrapper {
+      background: var(--glass-bg) !important; backdrop-filter: blur(12px);
+      color: var(--text-primary) !important; border: 1px solid var(--glass-border);
+      border-radius: 12px; font-size: 13px;
+    }
+    .leaflet-popup-tip { background: var(--glass-bg) !important; }
+    .popup-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
+    .popup-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-bottom: 6px; background: rgba(255,255,255,0.1); }
+  </style>
 </head>
 <body>
-    <div id="map"></div>
 
-    <div class="top-hud">
-        <div class="top-left-controls">
-            <div class="glass-pill" style="pointer-events: none;"><span>🚶‍♂️</span> LitWalk</div>
-            <select id="mapStyleSelect" class="glass-pill">
-                <option value="dark">🌙 Dark Mode</option>
-                <option value="light">☀️ Light Mode</option>
-                <option value="satellite">🛰️ Satellite</option>
-            </select>
-        </div>
-        <div class="top-right-controls">
-            <select id="citySelect" class="glass-pill">
-                <option value="london">London 🇬🇧</option>
-                <option value="barcelona">Barcelona 🇪🇸</option>
-                <option value="rome">Rome 🇮🇹</option>
-                <option value="new_york">New York 🇺🇸</option>
-            </select>
-            <button id="sosBtn" class="glass-pill sos-btn">🆘 SOS Guide</button>
-        </div>
+  <div class="top-controls">
+    <button class="action-btn transit-btn" onclick="toggleDrawer()">🚌 Transit Hacks</button>
+    <button class="filter-btn active" onclick="filterMarkers('all')">📍 All</button>
+    <button class="filter-btn" onclick="filterMarkers('bars')">🍺 Bars</button>
+    <button class="filter-btn" onclick="filterMarkers('eats')">🍕 Cheap Eats</button>
+    <button class="filter-btn" onclick="filterMarkers('gems')">🎨 Gems</button>
+    <button class="filter-btn" onclick="filterMarkers('wifi')">💻 Wi-Fi</button>
+    <button class="filter-btn" onclick="filterMarkers('water')">💧 Water</button>
+    <button class="filter-btn" onclick="filterMarkers('scam')">⚠️ Scam Zones</button>
+  </div>
+
+  <div id="drawer" class="drawer">
+    <div class="drawer-header">
+      <h2 id="drawer-title">🚌 Transit Hacks</h2>
+      <button class="close-btn" onclick="toggleDrawer()">&times;</button>
     </div>
+    <div id="drawer-content">Loading...</div>
+  </div>
 
-    <div class="bottom-hud">
-        <div id="exploreStateBox" style="display: flex; flex-direction: column; gap: 12px;">
-            <div class="filter-row">
-                <button id="filterBars" class="filter-chip active bars">🍺 Bars</button>
-                <button id="filterEats" class="filter-chip active eats">🍕 Eats</button>
-                <button id="filterWater" class="filter-chip active water">💧 Water</button>
-                <button id="filterScam" class="filter-chip active scam">⚠️ Live Risks</button>
-            </div>
-            <div class="search-row">
-                <div class="search-input-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input id="destInput" type="text" class="search-input" placeholder="Search venues..." autocomplete="off" />
-                    <div id="suggestionsBox" class="suggestions-dropdown"></div>
-                </div>
-                <button id="myLocationBtn" class="gps-btn">📍 GPS</button>
-            </div>
-            <div class="legal-link-footer" id="openDisclaimer">⚖️ Safety Disclaimer</div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    let map, cityData, markers = [];
+
+    async function init() {
+      map = L.map('map', { zoomControl: false }).setView([51.5134, -0.13], 13);
+      
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        maxZoom: 19
+      }).addTo(map);
+
+      try {
+        const res = await fetch('cities-data.json');
+        const data = await res.json();
+        cityData = data.london;
+        
+        renderMarkers('all');
+        renderTransitHacks();
+      } catch (err) {
+        console.error("Failed to load cities-data.json", err);
+      }
+    }
+
+    function createIcon(emoji, color) {
+      return L.divIcon({
+        html: `<div style="background:${color}; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px ${color}; font-size:16px;">${emoji}</div>`,
+        className: '', iconSize: [32, 32], iconAnchor: [16, 16]
+      });
+    }
+
+    function renderMarkers(category) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      const config = {
+        bars: { key: 'bars', emoji: '🍺', color: '#f59e0b' },
+        eats: { key: 'eats', emoji: '🍕', color: '#10b981' },
+        gems: { key: 'gems', emoji: '🎨', color: '#38bdf8' },
+        wifi: { key: 'wifi', emoji: '💻', color: '#8b5cf6' },
+        water: { key: 'water', emoji: '💧', color: '#06b6d4' },
+        scam: { key: 'scam', emoji: '⚠️', color: '#ef4444' }
+      };
+
+      Object.keys(config).forEach(cat => {
+        if (category === 'all' || category === cat) {
+          const cfg = config[cat];
+          (cityData[cfg.key] || []).forEach(item => {
+            const marker = L.marker([item.lat, item.lon], { icon: createIcon(cfg.emoji, cfg.color) });
+            
+            let popupContent = `<div class="popup-title">${item.name || item.title}</div>`;
+            if (item.price) popupContent += `<span class="popup-badge">${item.price}</span>`;
+            if (item.deal) popupContent += `<p>${item.deal}</p>`;
+            if (item.desc) popupContent += `<p>${item.desc}</p>`;
+            
+            marker.bindPopup(popupContent);
+            marker.addTo(map);
+            markers.push(marker);
+          });
+        }
+      });
+    }
+
+    function filterMarkers(cat) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderMarkers(cat);
+    }
+
+    function renderTransitHacks() {
+      const container = document.getElementById('drawer-content');
+      container.innerHTML = cityData.transitHacks.map(h => `
+        <div class="hack-card">
+          <h3>${h.title}</h3>
+          <p>${h.desc}</p>
         </div>
+      `).join('');
+    }
 
-        <div id="routeViewBox" class="route-view">
-            <div class="sheet-title-row">
-                <span class="sheet-title" id="routeHeaderTitle">📍 Data-Driven Risk Analysis</span>
-                <button id="clearRouteBtn" class="clear-route-btn">✕ Exit</button>
-            </div>
-            <div class="routes-grid">
-                <div id="safeCard" class="route-card active-safe">
-                    <div class="card-top"><span class="card-tag tag-safe">🟢 Safe</span><span class="route-dist" id="safeDist"></span></div>
-                    <div class="route-time" id="safeTime"></div>
-                    <div class="index-badge"><span style="color: #94a3b8; font-size: 10px;">Lit Index:</span><span id="safeScore" class="score-num score-high"></span></div>
-                </div>
-                <div id="balancedCard" class="route-card">
-                    <div class="card-top"><span class="card-tag tag-balanced">🔵 Balanced</span><span class="route-dist" id="balancedDist"></span></div>
-                    <div class="route-time" id="balancedTime"></div>
-                    <div class="index-badge"><span style="color: #94a3b8; font-size: 10px;">Lit Index:</span><span id="balancedScore" class="score-num score-med"></span></div>
-                </div>
-                <div id="fastCard" class="route-card">
-                    <div class="card-top"><span class="card-tag tag-fast">⚡ Direct</span><span class="route-dist" id="fastDist"></span></div>
-                    <div class="route-time" id="fastTime"></div>
-                    <div class="index-badge"><span style="color: #94a3b8; font-size: 10px;">Lit Index:</span><span id="fastScore" class="score-num score-low"></span></div>
-                </div>
-            </div>
-            <button id="shareRouteBtn" class="share-btn">📲 Share Live ETA</button>
-            <a id="gmapsNavBtn" href="#" target="_blank" class="gmaps-btn">🗺️ Open in Google Maps</a>
-        </div>
-    </div>
+    function toggleDrawer() {
+      document.getElementById('drawer').classList.toggle('open');
+    }
 
-    <!-- Modals -->
-    <div id="disclaimerModal" class="modal-overlay" style="display: none;">
-        <div class="modal-card">
-            <h2 style="color: #38bdf8; margin-bottom:12px;">⚖️ Safety Notice</h2>
-            <p style="color: #94a3b8; font-size: 14px; margin-bottom:20px;">Scores are dynamically computed based on real-time municipal crime data and proximity to verified risk zones.</p>
-            <button id="acceptDisclaimerBtn" class="accept-btn">I Agree</button>
-        </div>
-    </div>
-    <div id="sosModal" class="modal-overlay" style="display: none;">
-        <div class="modal-card" style="border: 1px solid rgba(239, 68, 68, 0.4);">
-            <h2 style="color: #f87171; margin-bottom:12px;">🆘 <span id="sosCityTitle">Emergency</span></h2>
-            <p style="color: #94a3b8; font-size: 14px;"><strong>Dial:</strong> <span id="sosNum" style="font-size: 24px; color: #f87171;"></span></p>
-            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;"><strong>Tip:</strong> <span id="sosTip"></span></p>
-            <button id="closeSosBtn" class="accept-btn" style="background: rgba(153, 27, 27, 0.9);">Close Guide</button>
-        </div>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        const CITIES_DATA = {
-        "london": {
-                "name": "London 🇬🇧", "center": [51.5134, -0.13], "zoom": 14,
-                "emergency": "999 or 112", "police": "Charing Cross Police Station",
-                "survivalTip": "Use Oxford St or The Strand.",
-                "water": [{ "name": "Trafalgar Square Refill", "lat": 51.508, "lon": -0.1281, "desc": "Refill." }],
-                "bars": [{ "name": "Simmons Bar", "lat": 51.514, "lon": -0.1325, "price": "£4.00", "vibe": "Bar.", "door": "Free Entry" }],
-                "eats": [{ "name": "Beigel Bake", "lat": 51.524, "lon": -0.0715, "price": "£3.00", "type": "Bagels." }],
-                "scam": [], // Burası artık otomatik json'dan dolacak!
-                "defaultStart": { "name": "Leicester Square", "lat": 51.5104, "lon": -0.1301 }
-        },
-        "barcelona": {
-                "name": "Barcelona 🇪🇸", "center": [41.387, 2.17], "zoom": 14,
-                "emergency": "112", "police": "Guàrdia Urbana",
-                "survivalTip": "Stick to wide avenues like Passeig de Gràcia.",
-                "water": [{ "name": "Font de Canaletes", "lat": 41.3853, "lon": 2.1701, "desc": "Potable fountain." }],
-                "bars": [{ "name": "L'Ovella Negra", "lat": 41.3846, "lon": 2.1691, "price": "€1.20", "vibe": "Beer hall." }],
-                "eats": [{ "name": "Pizza del Born", "lat": 41.3848, "lon": 2.183, "price": "€1.90", "type": "Pizza slice." }],
-                "scam": [{ "title": "La Rambla Pickpockets", "lat": 41.378, "lon": 2.176, "desc": "Verified scam." }],
-                "defaultStart": { "name": "Plaça de Catalunya", "lat": 41.387, "lon": 2.17 }
-        },
-        "rome": { "name": "Rome 🇮🇹", "center": [41.893, 12.475], "zoom": 14, "emergency": "112", "scam": [], "defaultStart": { "name": "Pantheon", "lat": 41.8986, "lon": 12.4769 } },
-        "new_york": { "name": "New York 🇺🇸", "center": [40.73, -73.99], "zoom": 14, "emergency": "911", "scam": [], "defaultStart": { "name": "Washington Sq", "lat": 40.7308, "lon": -73.9973 } }
-        };
-
-        let currentCityKey = "london";
-        let map;
-        let markersLayer = L.layerGroup();
-        let startMarker = null, endMarker = null, currentStart = null, currentEnd = null;
-        let selectedRouteMode = "safe";
-        let currentTileLayer = null;
-
-        // VITAL ADIM: AÇIK VERİYİ OTOMATİK OKUYAN MOTOR
-        async function bootSystem() {
-            try {
-                const response = await fetch('scam-data.json');
-                if (response.ok) {
-                    const liveData = await response.json();
-                    CITIES_DATA['london'].scam = liveData;
-                    console.log("Mükemmel: 2600+ Canlı Devlet Verisi Haritaya Bağlandı!");
-                }
-            } catch (error) {
-                console.log("Canlı veri okunamadı, standart prototipe dönülüyor.");
-            }
-            initMap();
-        }
-
-        const TILE_PROVIDERS = {
-            dark: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-            light: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-            satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-        };
-
-        function getActiveCity() { return CITIES_DATA[currentCityKey]; }
-
-        function setMapStyle(styleKey) {
-            if (currentTileLayer) map.removeLayer(currentTileLayer);
-            currentTileLayer = L.tileLayer(TILE_PROVIDERS[styleKey] || TILE_PROVIDERS.dark, { maxZoom: 18, attribution: 'Tiles &copy; Esri' }).addTo(map);
-        }
-
-        function initMap() {
-            const city = getActiveCity();
-            currentStart = city.defaultStart;
-            map = L.map('map', { zoomControl: false }).setView(city.center, city.zoom);
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
-            setMapStyle('dark');
-            markersLayer.addTo(map);
-            renderCity();
-
-            map.on('click', e => {
-                currentEnd = { name: "Pinned Location", lat: e.latlng.lat, lon: e.latlng.lng };
-                document.getElementById('destInput').value = "Pinned Location";
-                handleRouteSelection(currentStart, currentEnd);
-            });
-        }
-
-        function createCustomIcon(emoji, bg) {
-            return L.divIcon({ className: 'custom-icon', html: `<div style="background: ${bg}; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">${emoji}</div>`, iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -16] });
-        }
-
-        function renderCity() {
-            const city = getActiveCity();
-            markersLayer.clearLayers();
-            clearActiveRoute();
-
-            const addMarkers = (data, iconChar, color, isScam = false) => {
-                if(!data) return;
-                data.forEach(item => {
-                    // YÜKSEK VERİ OPTİMİZASYONU: 2600 noktayı büyük pinle basarsak tarayıcı çöker. Isı noktasına çeviriyoruz.
-                    if (isScam && data.length > 50) {
-                        const m = L.circleMarker([item.lat, item.lon], {
-                            radius: 4, fillColor: '#ef4444', color: 'transparent', fillOpacity: 0.6
-                        }).bindPopup(`<div style="font-size: 13px; color: #0f172a;"><strong>${item.title}</strong><br>${item.desc}</div>`);
-                        markersLayer.addLayer(m);
-                    } else {
-                        const icon = createCustomIcon(iconChar, color);
-                        const m = L.marker([item.lat, item.lon], { icon }).bindPopup(`<div style="font-size: 14px; color: #0f172a; padding: 4px; min-width: 200px;"><strong style="color: ${color}; font-size: 16px;">${iconChar} ${item.name || item.title}</strong><br><p style="font-size: 12px; color: #475569; margin-top: 4px;">${item.vibe || item.type || item.desc}</p>${item.name ? `<button onclick="setDestination(${item.lat}, ${item.lon}, '${item.name.replace(/'/g, "\\'")}')" style="margin-top: 12px; width: 100%; background: ${color}; color: white; border: none; border-radius: 8px; padding: 10px; font-weight: 700; cursor: pointer;">🚶 Route Here</button>` : ''}</div>`);
-                        markersLayer.addLayer(m);
-                    }
-                });
-            };
-
-            if (document.getElementById('filterBars').classList.contains('active')) addMarkers(city.bars, "🍺", "rgba(180, 83, 9, 0.95)");
-            if (document.getElementById('filterEats').classList.contains('active')) addMarkers(city.eats, "🍕", "rgba(190, 18, 60, 0.95)");
-            if (document.getElementById('filterWater').classList.contains('active')) addMarkers(city.water, "💧", "rgba(2, 132, 199, 0.95)");
-            if (document.getElementById('filterScam').classList.contains('active')) addMarkers(city.scam, "⚠️", "rgba(153, 27, 27, 0.95)", true);
-
-            document.getElementById('destInput').placeholder = "Search in " + city.name.split(" ")[0] + "...";
-        }
-
-        window.setDestination = (lat, lon, name) => { currentEnd = { name, lat, lon }; document.getElementById('destInput').value = name; handleRouteSelection(currentStart, currentEnd); map.closePopup(); };
-
-        function handleRouteSelection(start, end) {
-            if (startMarker) map.removeLayer(startMarker); if (endMarker) map.removeLayer(endMarker);
-            document.getElementById('exploreStateBox').style.display = 'none'; document.getElementById('routeViewBox').style.display = 'flex';
-
-            startMarker = L.marker([start.lat, start.lon], { icon: createCustomIcon("🟢", "#10b981") }).addTo(map);
-            endMarker = L.marker([end.lat, end.lon], { icon: createCustomIcon("🏁", "#ef4444") }).addTo(map);
-
-            const city = getActiveCity();
-            const directDist = Math.sqrt(Math.pow((end.lat - start.lat) * 111000, 2) + Math.pow((end.lon - start.lon) * 85000, 2));
-
-            // CANLI RİSK HESAPLAMA MOTORU (2676 Kaydı Milisaniyeler İçinde Tarar)
-            let minScamDist = 999999;
-            if (city.scam && city.scam.length > 0) {
-                city.scam.forEach(scam => {
-                    const d = Math.sqrt(Math.pow((end.lat - scam.lat) * 111000, 2) + Math.pow((end.lon - scam.lon) * 85000, 2));
-                    if (d < minScamDist) minScamDist = d;
-                });
-            }
-
-            let riskPenalty = minScamDist < 800 ? (800 - minScamDist) / 50 : 0;
-
-            const safeMeters = Math.round(directDist * 1.35), safeMins = Math.max(3, Math.round(safeMeters / 75));
-            const balancedMeters = Math.round(directDist * 1.18), balancedMins = Math.max(2, Math.round(balancedMeters / 75));
-            const fastMeters = Math.round(directDist * 1.05), fastMins = Math.max(2, Math.round(fastMeters / 75));
-
-            let safeScore = (9.8 - (riskPenalty * 0.05)).toFixed(1);
-            if (safeScore > 9.9) safeScore = "9.9"; if (safeScore < 8.2) safeScore = "8.2";
-            let balancedScore = (8.4 - (riskPenalty * 0.25)).toFixed(1); if (balancedScore < 6.0) balancedScore = "6.1";
-            let fastScore = (6.8 - (riskPenalty * 0.7)).toFixed(1); if (fastScore < 3.1) fastScore = "3.1";
-
-            document.getElementById('safeTime').innerText = safeMins + " min"; document.getElementById('safeDist').innerText = (safeMeters > 1000 ? (safeMeters/1000).toFixed(1) + " km" : safeMeters + " m"); document.getElementById('safeScore').innerText = safeScore;
-            document.getElementById('balancedTime').innerText = balancedMins + " min"; document.getElementById('balancedDist').innerText = (balancedMeters > 1000 ? (balancedMeters/1000).toFixed(1) + " km" : balancedMeters + " m"); document.getElementById('balancedScore').innerText = balancedScore;
-            document.getElementById('fastTime').innerText = fastMins + " min"; document.getElementById('fastDist').innerText = (fastMeters > 1000 ? (fastMeters/1000).toFixed(1) + " km" : fastMeters + " m"); document.getElementById('fastScore').innerText = fastScore;
-
-            document.getElementById('gmapsNavBtn').href = `https://www.google.com/maps/dir/?api=1&origin=${start.lat},${start.lon}&destination=${end.lat},${end.lon}&travelmode=walking`;
-            map.fitBounds(L.featureGroup([startMarker, endMarker]).getBounds(), { padding: [80, 80] });
-        }
-
-        function clearActiveRoute() { if (startMarker) map.removeLayer(startMarker); if (endMarker) map.removeLayer(endMarker); currentEnd = null; document.getElementById('destInput').value = ''; document.getElementById('exploreStateBox').style.display = 'flex'; document.getElementById('routeViewBox').style.display = 'none'; }
-        document.getElementById('clearRouteBtn').addEventListener('click', clearActiveRoute);
-
-        ['safe', 'balanced', 'fast'].forEach(mode => {
-            document.getElementById(`${mode}Card`).addEventListener('click', () => {
-                selectedRouteMode = mode;
-                ['safe', 'balanced', 'fast'].forEach(m => document.getElementById(`${m}Card`).className = `route-card${m === mode ? ' active-' + m : ''}`);
-            });
-        });
-
-        document.getElementById('shareRouteBtn').addEventListener('click', async () => {
-            if (!currentEnd) return;
-            const eta = document.getElementById(`${selectedRouteMode}Time`).innerText;
-            const shareData = { title: 'LitWalk Live', text: `Walking to ${currentEnd.name}. ETA: ${eta}. 🌙🚶‍♂️`, url: window.location.href };
-            try { if (navigator.share) await navigator.share(shareData); else { navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`); alert("Copied!"); } } catch (err) {}
-        });
-
-        document.getElementById('citySelect').addEventListener('change', e => { currentCityKey = e.target.value; const city = getActiveCity(); map.setView(city.center, city.zoom); currentStart = city.defaultStart; renderCity(); });
-        document.getElementById('mapStyleSelect').addEventListener('change', e => setMapStyle(e.target.value));
-
-        const destInput = document.getElementById('destInput'), sugBox = document.getElementById('suggestionsBox');
-        destInput.addEventListener('input', function() {
-            const city = getActiveCity(), q = this.value.trim(); if (q.length < 2) { sugBox.style.display = 'none'; return; }
-            const places = [...(city.bars||[]), ...(city.eats||[])].filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
-            if (!places.length) { sugBox.style.display = 'none'; return; }
-            sugBox.innerHTML = places.slice(0, 6).map(m => `<div class="suggestion-item" onclick="setDestination(${m.lat}, ${m.lon}, '${m.name.replace(/'/g, "\\'")}')"><div class="sug-left"><span class="sug-title">${m.name}</span></div></div>`).join(''); 
-            sugBox.style.display = 'block';
-        });
-        document.addEventListener('click', e => { if (!document.querySelector('.search-input-wrapper').contains(e.target)) sugBox.style.display = 'none'; });
-
-        document.getElementById('myLocationBtn').addEventListener('click', function() {
-            if ("geolocation" in navigator) {
-                this.innerText = "⏳...";
-                navigator.geolocation.getCurrentPosition(
-                    pos => { currentStart = { name: "GPS", lat: pos.coords.latitude, lon: pos.coords.longitude }; this.innerText = "📍 GPS"; if (currentEnd) handleRouteSelection(currentStart, currentEnd); },
-                    () => { alert("GPS failed."); this.innerText = "📍 GPS"; }, { enableHighAccuracy: true, timeout: 5000 }
-                );
-            }
-        });
-
-        ['filterBars', 'filterEats', 'filterWater', 'filterScam'].forEach(id => { document.getElementById(id).addEventListener('click', function() { this.classList.toggle('active'); renderCity(); }); });
-
-        if (!localStorage.getItem('litwalk_legal')) document.getElementById('disclaimerModal').style.display = "flex";
-        document.getElementById('acceptDisclaimerBtn').addEventListener('click', () => { localStorage.setItem('litwalk_legal', 'true'); document.getElementById('disclaimerModal').style.display = "none"; });
-        document.getElementById('openDisclaimer').addEventListener('click', () => document.getElementById('disclaimerModal').style.display = "flex");
-
-        document.getElementById('sosBtn').addEventListener('click', () => { const city = getActiveCity(); document.getElementById('sosCityTitle').innerText = city.name + " SOS"; document.getElementById('sosNum').innerText = city.emergency; document.getElementById('sosTip').innerText = city.survivalTip; document.getElementById('sosModal').style.display = "flex"; });
-        document.getElementById('closeSosBtn').addEventListener('click', () => document.getElementById('sosModal').style.display = "none");
-
-        window.addEventListener('DOMContentLoaded', bootSystem);
-    </script>
+    window.onload = init;
+  </script>
 </body>
 </html>
