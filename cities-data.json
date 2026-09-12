@@ -1,0 +1,65 @@
+{
+  "london": {
+    "name": "London 🇬🇧",
+    "center": [51.5134, -0.13],
+    "zoom": 13,
+    "emergency": "999 or 112",
+    "transitHacks": [
+      {
+        "title": "🎫 Daily Cap & 16-25 Railcard Hack",
+        "desc": "Hit the Zone 1-2 daily cap (£8.90 on contactless/Oyster) and all subsequent rides cost £0.00. Link a 16-25 National Railcard to a physical Oyster card for 34% off off-peak fares and caps."
+      },
+      {
+        "title": "✈️ Airport Transfer Hacks",
+        "desc": "Skip the pricey Gatwick Express; take standard Southern or Thameslink trains from the same platform with contactless. Book National Express buses to Stansted or Luton weeks ahead for £5."
+      },
+      {
+        "title": "🚌 £1.75 Hopper Fare & Night Buses",
+        "desc": "Your £1.75 bus fare includes unlimited bus transfers within 60 minutes. On night buses (N-series), sit on the lower deck near the driver for better safety."
+      }
+    ],
+    "bars": [
+      { "name": "Phineas Bar (UCL)", "lat": 51.5246, "lon": -0.1340, "price": "< £5 Pint", "deal": "🍺 Pints start at £3.55. 'Glittoris' club night every Thursday.", "crowd": "UCL Students & Erasmus", "tags": ["#StudentUnion", "#CheapPints"] },
+      { "name": "Guy's Bar", "lat": 51.5042, "lon": -0.0886, "price": "< £5 Pint", "deal": "🍺 Carling pint £2.95, double vodka £4.60. Skip Wednesday sports nights.", "crowd": "KCL Med Students & Travelers", "tags": ["#Subterranean", "#BudgetBar"] },
+      { "name": "BOX Piccadilly", "lat": 51.5101, "lon": -0.1338, "price": "Student Discount", "deal": "🍹 25% off with 'Student Wallet' & £3.50 pints after 20:00 on Saturdays.", "crowd": "Gen-Z & Pre-Gamers", "tags": ["#SportsBar", "#LateNightPrep"] },
+      { "name": "Belushi's London Bridge", "lat": 51.5020, "lon": -0.0927, "price": "Student Discount", "deal": "🎒 20% off food & £4.00 draft beer with a student/hostel wristband.", "crowd": "Backpackers & Internationals", "tags": ["#HostelBar", "#BeerPong"] },
+      { "name": "Simmons Bar Soho", "lat": 51.5134, "lon": -0.1319, "price": "< £5 Pint", "deal": "⏰ Happy Hour 15:00-20:00: £2.50 beer/bottles and £15 cocktail teapots.", "crowd": "Gen-Z & Party Crowd", "tags": ["#RetroVibe", "#HappyHourKing"] },
+      { "name": "The Court", "lat": 51.5223, "lon": -0.1352, "price": "Student Discount", "deal": "🎓 20% off all food and drinks using the Student Beans app.", "crowd": "UCL & SOAS Students", "tags": ["#StudentPub", "#PreGame"] },
+      { "name": "Bar Rumba", "lat": 51.5113, "lon": -0.1328, "price": "Student Discount", "deal": "🎟️ Free entry on guestlist before 22:00, £3.00 drinks on student nights.", "crowd": "University Clubbers", "tags": ["#LateNight", "#DanceTill3AM"] },
+      { "name": "Spit & Sawdust", "lat": 51.4950, "lon": -0.0911, "price": "< £5 Pint", "deal": "🎨 £3.50 pint deals on Thursdays between 19:00 and 21:00.", "crowd": "UAL Art Students", "tags": ["#LocalPub", "#Alternative"] },
+      { "name": "The Crown Limehouse", "lat": 51.5126, "lon": -0.0381, "price": "< £5 Pint", "deal": "🍺 £4.50 Guinness, £4.40 Carlsberg. One of East London's cheapest pubs.", "crowd": "Queen Mary Students", "tags": ["#Authentic", "#Gritty"] },
+      { "name": "The Museum Tavern", "lat": 51.5173, "lon": -0.1264, "price": "< £5 Pint", "deal": "📵 Sam Smith beers £3.50-£4.50. No phones or laptops allowed inside.", "crowd": "Academics & Travelers", "tags": ["#VictorianPub", "#NoPhones"] }
+    ],
+    "eats": [
+      { "name": "Beigel Bake Brick Lane", "lat": 51.5244, "lon": -0.0718, "price": "< £5", "deal": "🥯 Open 24/7. Salt beef and plain beigels from £2.20. Pick the shop with the white sign.", "type": "24/7 Bakery" },
+      { "name": "Pizza Union Spitalfields", "lat": 51.5186, "lon": -0.0789, "price": "< £10", "deal": "🍕 Fire-baked pizzas £5.95 - £8.95. No table service, so no 12.5% charge.", "type": "Fast-Casual Roman Pizza" },
+      { "name": "Roti King Euston", "lat": 51.5283, "lon": -0.1321, "price": "< £10", "deal": "🍲 Legendary Roti Canai platters. Arrive at 11:45 or 15:00 to avoid queues.", "type": "Malaysian Street Food" },
+      { "name": "Stone Willy's Pizza (UCL)", "lat": 51.5246, "lon": -0.1340, "price": "Student Rates", "deal": "🍕 Subsidized campus meals under £6. Open to non-students as well.", "type": "Campus Student Pizza" },
+      { "name": "The Rolling Scones Cafe", "lat": 51.5841, "lon": -0.0074, "price": "< £10", "deal": "☕ Budget-friendly cafe located inside the neon museum (God's Own Junkyard).", "type": "Alternative Cafe" }
+    ],
+    "gems": [
+      { "name": "Leake Street Arches", "lat": 51.5010, "lon": -0.1143, "price": "100% Free", "desc": "🎨 300m legal graffiti tunnel under Waterloo Station. Bring your own spray paint." },
+      { "name": "Primrose Hill Viewpoint", "lat": 51.5396, "lon": -0.1608, "price": "100% Free", "desc": "🌅 Sunset picnic spot with panoramic skyline views. Bring your own drinks." },
+      { "name": "God's Own Junkyard", "lat": 51.5841, "lon": -0.0074, "price": "Free Entry", "desc": "💡 Massive neon art gallery and warehouse. Open Friday to Sunday." },
+      { "name": "St Dunstan in the East", "lat": 51.5097, "lon": -0.0827, "price": "100% Free", "desc": "🌿 Overgrown garden park inside WWII church ruins." },
+      { "name": "Southbank Centre Foyer", "lat": 51.5058, "lon": -0.1166, "price": "100% Free", "desc": "🛋️ Free public indoor seating and riverside skatepark." }
+    ],
+    "wifi": [
+      { "name": "The British Library", "lat": 51.5294, "lon": -0.1269, "price": "100% Free", "desc": "💻 High-speed Wi-Fi, study desks, and free day lockers." },
+      { "name": "Barbican Centre Foyers", "lat": 51.5202, "lon": -0.0950, "price": "100% Free", "desc": "🏢 Quiet study areas with strong internet inside a iconic Brutalist space." },
+      { "name": "Wellcome Collection", "lat": 51.5260, "lon": -0.1339, "price": "100% Free", "desc": "🛋️ Beanbag seating, power outlets, and a relaxed study environment." }
+    ],
+    "water": [
+      { "name": "St Pancras Square Fountain", "lat": 51.5332, "lon": -0.1256, "desc": "💧 Filtered 24/7 drinking water fountain." },
+      { "name": "Borough Market Fountains", "lat": 51.5055, "lon": -0.0905, "desc": "💧 Cold drinking water refill station." },
+      { "name": "Trafalgar Square Refill", "lat": 51.5080, "lon": -0.1280, "desc": "💧 Public water refill point on the north terrace." }
+    ],
+    "scam": [
+      { "title": "Westminster Bridge (Three-Shell Game)", "lat": 51.5013, "lon": -0.1187, "desc": "⚠️ Pickpockets target crowd members watching the rigged 'Cup and Ball' game." },
+      { "title": "Oxford Circus (Bump & Snatch)", "lat": 51.5152, "lon": -0.1419, "desc": "⚠️ Thieves bump into pedestrians in dense crowds to grab phones unnoticed." },
+      { "title": "Leicester Square (Fake Monk & Flower Scam)", "lat": 51.5103, "lon": -0.1301, "desc": "⚠️ Forcefully press flowers/bracelets into your hands and demand cash." },
+      { "title": "Camden Lock (Sauce Spill Trick)", "lat": 51.5416, "lon": -0.1462, "desc": "⚠️ Intentionally spill sauce on you and pick your pockets while 'helping' clean up." },
+      { "title": "Shoreditch High St (E-Bike Phone Snatch)", "lat": 51.5233, "lon": -0.0759, "desc": "⚠️ Riders on electric bikes snatch phones straight out of hands on sidewalks." }
+    ]
+  }
+}
